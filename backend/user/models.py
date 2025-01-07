@@ -27,6 +27,8 @@ class User(PermissionsMixin, AbstractBaseUser):
 
     profile_picture = models.ImageField(upload_to='images/', null=True, blank=True)
 
+    friends = models.ManyToManyField('User', blank=True)
+
     date_created = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
