@@ -12,6 +12,6 @@
   @apply h-screen w-screen;
 }
 
-#email:focus ~ label, #email:not(:placeholder-shown) ~ label{
+.slideAnimation:focus ~ label, .slideAnimation:not(:placeholder-shown) ~ label{
   @apply -translate-x-1 -translate-y-9  px-2 ml-2  z-20;
 }
