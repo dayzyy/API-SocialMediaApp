@@ -41,6 +41,31 @@ export default function Chat(){
     }
   }, [user])
 
+  useEffect(_ => {
+    if (!socket) return
+
+    const get_chat = async _ => {
+      const response = await fetch(`${API_URL}/chat/${friend.id}/`, {
+        method: 'GET',
+        headers: {
+          'Content-type': 'application/json',
+          'Authorization': `Bearer ${tokens.access}`
+        }
+      })
+
+      if (response.status == 200) {
+        const data = await response.json()
+        setMessages(data)
+      }
+
+      if (response.status == 400)  {
+        navigate('/home')
+      }
+    }
+
+    get_chat()
+  }, [socket])
+
   const send_message = _ => {
     if (socket && message) {
       const text_data = {

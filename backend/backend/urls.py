@@ -12,7 +12,8 @@ urlpatterns = [
     path('tokens/obtain/', TokenObtainPairView.as_view(), name='token-obtain'),
     path('tokens/refresh/', TokenRefreshView.as_view(), name='token-refresh'),
 
-    path('user/', include('user.urls'))
+    path('user/', include('user.urls')),
+    path('chat/', include('chat.urls'))
 ]
 
 if settings.DEBUG:

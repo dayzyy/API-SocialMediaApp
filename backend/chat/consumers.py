@@ -2,7 +2,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 
 from user.models import User
-from chat.models import Chat
+from chat.models import Chat, Message
 
 import json
 import jwt
@@ -41,15 +41,15 @@ class ChatConsumer(AsyncWebsocketConsumer):
             await self.close()
             return
 
-        chat = await self.get_chat(friend)
-        if not chat:
+        self.chat = await self.get_chat(friend)
+        if not self.chat:
             if await self.is_following(friend):
-                chat = await self.create_chat(friend)
+                self.chat = await self.create_chat(friend)
             else:
                 await self.close()
                 return
 
-        self.room_name = f"room_{chat.id}"
+        self.room_name = f"room_{self.chat.id}"
         self.room_group_name = f"group_{self.room_name}"
 
         await self.channel_layer.group_add(
@@ -77,6 +77,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 'user': self.user.email,
             }
         )
+
+        await self.create_message(self.chat, message)
 
     async def chat_message(self, event):
         text_data = json.dumps({
@@ -112,3 +114,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         chat = Chat.objects.create()
         chat.participants.add(self.user, friend)
         return chat
+
+    @database_sync_to_async
+    def create_message(self, chat, message):
+        Message.objects.create(chat=chat, content=message, sender=self.user)

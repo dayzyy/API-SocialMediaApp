@@ -8,11 +8,11 @@ class Chat(models.Model):
         return f"Chat betweem {','.join(user.email for user in self.participants.all())}"
     
 class Message(models.Model):
-    chat = models.ForeignKey(Chat, on_delete=models.CASCADE)
+    chat = models.ForeignKey(Chat, on_delete=models.CASCADE, related_name="messages")
     sender = models.ForeignKey(User, on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)
     content = models.TextField(max_length=500)
     is_read = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"Message from {self.sender.username}: {self.content[:30]}"
+        return f"Message from {self.sender.email}: {self.content[:30]}"
