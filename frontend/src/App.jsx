@@ -3,17 +3,19 @@ import { Routes, Route } from 'react-router-dom'
 import Signup from './pages/Signup'
 import Login from './pages/Login'
 
-import { AuthProvider } from './context/AuthContext'
+import Home from './pages/Home'
+import Directs from './pages/Directs'
+import Chat from './pages/Chat'
 
 export default function App(){
   return(
-    <AuthProvider>
-      <Routes>
-        <Route path='/home' element={<h1>main page</h1>}/>
-        <Route path='/signup' element={<Signup />}/>
-        <Route path='/login' element={<Login />}/>
-        <Route path='*' element={<h1>404</h1>} />
-      </Routes>
-    </AuthProvider>
+    <Routes>
+      <Route path='/home' element={<Home/>}/>
+      <Route path='/signup' element={<Signup/>}/>
+      <Route path='/login' element={<Login/>}/>
+      <Route path='/directs' element={<Directs/>}/>
+      <Route path='/chat/:friend' element={<Chat/>}/>
+      <Route path='*' element={<h1>404</h1>} />
+    </Routes>
   )
 }

@@ -1,8 +1,10 @@
 import json
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 
 from .models import User
+from .serializers import UserSerializer
 
 @api_view(['POST'])
 def register(request):
@@ -17,3 +19,9 @@ def register(request):
 
     User.objects.create_user(data['email'], password=data['password'], first_name=data['first_name'], last_name=data['last_name'])
     return Response(status=200)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_user(request):
+    user = UserSerializer(request.user).data
+    return Response(user, status=200)

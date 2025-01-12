@@ -1,5 +1,3 @@
-import Header from "../components/Header";
-
 import { useState } from "react";
 
 import { FaRegEye } from "react-icons/fa";
@@ -17,9 +15,7 @@ export default function Signup(){
   const { register } = useAuth()
 
   return(
-    <div className="pt-40  h-screen w-screen flex justify-center">
-      <Header />
-
+    <main className="pt-40  h-screen w-screen flex justify-center">
       <div className="flex flex-col items-end gap-6">
         <div className="relative  w-80 md:w-96 h-16  border border-black rounded  flex items-center">
           <input type="text" id="email" placeholder="" value={email} onChange={e => setEmail(e.target.value)} className="slideAnimation  absolute  h-full w-full  outline-none bg-transparent  pl-4 pr-12 z-10"/>
@@ -59,6 +55,6 @@ export default function Signup(){
         <button onClick={_ => register(email, password1, password2, name, lastName)} className="h-20 w-40  border border-black rounded-md  font-semibold">signup</button>
         <p onClick={_ => navigate('/login')} className="self-start  text-blue-500 underline  cursor-pointer">Have an account? Login</p>
       </div>
-    </div>
+    </main>
   )
 }

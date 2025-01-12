@@ -15,14 +15,16 @@ export function AuthProvider({children}){
   const sl = Swal
 
   useEffect(_ => {
-    if (tokens) console.log('getting user...')
+    if (tokens) {
+      get_user()
+    }
 
     else {
       if (location.pathname != '/login' && location.pathname != '/signup') {
           navigate('/login')
         }
     }
-  }, [tokens])
+  }, [tokens, location])
 
   const login = async (email, password) => {
     if (!email || !password) {
@@ -137,8 +139,52 @@ export function AuthProvider({children}){
     }
   }
 
+  const get_user = async _ => {
+    if (!tokens) return
+
+    const response = await fetch(`${API_URL}/user/get/`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer  ${tokens.access}`
+      }
+    })
+
+    if (response.status == 200) {
+      const data = await response.json()
+      console.log(data)
+      setUser(data)
+    }
+    else{
+      console.log('failed')
+    }
+
+    if (response.status == 401) {
+      console.log('token expired')
+
+      const res = await fetch(`${API_URL}/tokens/refresh/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(tokens)
+      })
+
+      if (res.status == 200){
+        console.log('refreshing')
+        const data = await res.json()
+        localStorage.setItem('tokens', JSON.stringify({...tokens, access: data.access}))
+        setTokens(prev => ({...prev, access: data.access}))
+      }
+      
+      else{
+        navigate('/login')
+      }
+    }
+  }
+
   return (
-    <AuthContext.Provider value={{login, register}}>
+    <AuthContext.Provider value={{login, register, user, tokens}}>
       {children}
     </AuthContext.Provider>
   )

@@ -1,5 +1,3 @@
-import Header from "../components/Header";
-
 import { useState } from "react";
 
 import { FaRegEye } from "react-icons/fa";
@@ -16,9 +14,7 @@ export default function Login(){
   const navigate = useNavigate()
 
   return(
-    <div className="pt-40  h-screen w-screen flex justify-center">
-      <Header />
-
+    <main className="pt-40  h-screen w-screen flex justify-center">
       <div className="flex flex-col items-end gap-6">
         <div className="relative  w-80 md:w-96 h-16  border border-black rounded  flex items-center">
           <input type="text" id="email" placeholder="" value={email} onChange={e => setEmail(e.target.value)} className="slideAnimation  absolute  h-full w-full  outline-none bg-transparent  pl-4 pr-12 z-10"/>
@@ -39,6 +35,6 @@ export default function Login(){
 
         <p onClick={_ => navigate('/signup')} className="self-start  text-blue-500 underline  cursor-pointer">No account? Signup</p>
       </div>
-    </div>
+    </main>
   )
 }
