@@ -15,7 +15,7 @@ export default function App(){
       <Route path='/login' element={<Login/>}/>
       <Route path='/directs' element={<Directs/>}/>
       <Route path='/chat/:friend' element={<Chat/>}/>
-      <Route path='*' element={<h1>404</h1>} />
+      <Route path='*' element={<main className="pt-24 w-screen h-screen flex justify-center"><h1 className="font-bold text-3xl">404 Page not found</h1></main>} />
     </Routes>
   )
 }

@@ -1,14 +1,16 @@
 import API_URL from '../settings'
 
-import { useLocation } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
 import { useEffect, useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 
 import { BsSendFill } from "react-icons/bs";
+import { IoMdArrowBack, IoMdArrowRoundBack } from "react-icons/io";
 
 import Loading from '../components/Loading'
 
 export default function Chat(){
+  const navigate = useNavigate()
   const location = useLocation()
   const friend = location.state?.friend
   const {user, tokens} = useAuth()
@@ -51,14 +53,26 @@ export default function Chat(){
 
   return(
     <main className="pt-24  h-screen w-screen  flex flex-col justify-between">
-      <div className="flex-none  px-4 w-full h-20  border  flex items-center gap-4  cursor-pointer  bg-gray-50">
-        <img className="w-12 h-12  border rounded" src="https://cdn-icons-png.flaticon.com/512/2105/2105556.png"/>
-        <p>{friend.email}</p>
+      <div className="flex-none  px-4 w-full h-20  border  flex items-center gap-4  bg-gray-50">
+        <IoMdArrowBack onClick={_ => navigate('/directs')} className="text-2xl  cursor-pointer"/>
+
+        <img className="w-12 h-12  border rounded"
+        src={friend.profile_picture != null ? `${API_URL}${friend.profile_picture}` : "https://cdn-icons-png.flaticon.com/512/2105/2105556.png"}/>
+
+        <p>{friend.first_name} {friend.last_name}</p>
       </div>
 
       <div className="w-full  flex-1  flex flex-col gap-2  overflow-y-auto  p-4">
         {messages && messages.map((msg, index) => {
-          return <p key={index} className={`w-fit  p-2  border rounded-md  ${msg.sender == user.email ? 'self-end' : ''}`}>{msg.content}</p>
+          const acc = msg.sender == user.email ? user : friend
+          return (
+            <div key={index} className={`flex items-center gap-1 ${msg.sender == user.email ? 'flex-row-reverse' : ''}`}>
+              <img className="w-10 h-10  border rounded-3xl"
+              src={acc.profile_picture != null ? `${API_URL}${acc.profile_picture}` : "https://cdn-icons-png.flaticon.com/512/2105/2105556.png"}/>
+
+              <p className={`w-fit overflow-y-auto maxWidthHalf break-words  p-2 rounded-md ${msg.sender == user.email ? 'border' : 'bg-blue-100'}`}>{msg.content}</p>
+            </div>
+          )
         })}
         {!messages && <Loading/>}
       </div>
