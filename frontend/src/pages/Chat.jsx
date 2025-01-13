@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 
 import { BsSendFill } from "react-icons/bs";
-import { IoMdArrowBack, IoMdArrowRoundBack } from "react-icons/io";
+import { IoMdArrowBack } from "react-icons/io";
 
 import Loading from '../components/Loading'
 
@@ -19,7 +19,11 @@ export default function Chat(){
   const [messages, setMessages] = useState([])
   const [socket, setSocket] = useState(null)
 
-  if (!friend) return <h1>404</h1>
+
+  if (!friend) {
+    navigate('/home')
+    return
+  }
 
   useEffect(_ => {
     if (!user) return
@@ -63,6 +67,11 @@ export default function Chat(){
     get_chat()
   }, [socket])
 
+  useEffect(_ => {
+    const chat = document.getElementById("chat")
+    chat.scrollTop = chat.scrollHeight
+  }, [messages])
+
   const send_message = _ => {
     if (socket && message) {
       const text_data = {
@@ -84,22 +93,22 @@ export default function Chat(){
         <p>{friend.first_name} {friend.last_name}</p>
       </div>
 
-      <div className="w-full  flex-1  flex flex-col gap-2  overflow-y-auto  p-4">
+      <div id="chat" className="w-full  flex-1  flex flex-col gap-2  overflow-y-auto  p-4">
         {messages && messages.map((msg, index) => {
           const acc = msg.sender == user.email ? user : friend
-          const isFirstMessage = index === 0 || messages[index - 1]?.sender != msg.sender
           const isLastMessage = index === messages.length - 1 || messages[index + 1]?.sender != msg.sender
 
           return (
+
             <div key={msg.id} className={`flex items-center gap-1 ${msg.sender == user.email ? 'flex-row-reverse' : ''}`}>
               {
                 isLastMessage &&
-                <img className="w-10 h-10  border rounded-3xl"
+                <img className="w-7 h-7  border rounded-3xl"
                 src={acc.profile_picture != null ? `${API_URL}${acc.profile_picture}` : "https://cdn-icons-png.flaticon.com/512/2105/2105556.png"}/>
               }
 
               <p className={`w-fit overflow-y-auto maxWidthHalf break-words  p-2 rounded-md
-              ${!isLastMessage ? 'mr-4' : ''}
+              ${!isLastMessage && (msg.sender == user.email ? 'mr-8' : 'ml-8')}
               ${msg.sender == user.email ? 'border' : 'bg-blue-100'}`}>{msg.content}</p>
             </div>
           )
