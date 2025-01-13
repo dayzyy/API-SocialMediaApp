@@ -29,10 +29,7 @@ export default function Chat(){
 
     ws.onmessage = event => {
       const data = JSON.parse(event.data)
-      const newMessage = {
-        content: data.message,
-        sender: data.user,
-      }
+      const newMessage = data.message
       setMessages(prev => [...prev, newMessage])
     }
 
@@ -90,12 +87,20 @@ export default function Chat(){
       <div className="w-full  flex-1  flex flex-col gap-2  overflow-y-auto  p-4">
         {messages && messages.map((msg, index) => {
           const acc = msg.sender == user.email ? user : friend
-          return (
-            <div key={index} className={`flex items-center gap-1 ${msg.sender == user.email ? 'flex-row-reverse' : ''}`}>
-              <img className="w-10 h-10  border rounded-3xl"
-              src={acc.profile_picture != null ? `${API_URL}${acc.profile_picture}` : "https://cdn-icons-png.flaticon.com/512/2105/2105556.png"}/>
+          const isFirstMessage = index === 0 || messages[index - 1]?.sender != msg.sender
+          const isLastMessage = index === messages.length - 1 || messages[index + 1]?.sender != msg.sender
 
-              <p className={`w-fit overflow-y-auto maxWidthHalf break-words  p-2 rounded-md ${msg.sender == user.email ? 'border' : 'bg-blue-100'}`}>{msg.content}</p>
+          return (
+            <div key={msg.id} className={`flex items-center gap-1 ${msg.sender == user.email ? 'flex-row-reverse' : ''}`}>
+              {
+                isLastMessage &&
+                <img className="w-10 h-10  border rounded-3xl"
+                src={acc.profile_picture != null ? `${API_URL}${acc.profile_picture}` : "https://cdn-icons-png.flaticon.com/512/2105/2105556.png"}/>
+              }
+
+              <p className={`w-fit overflow-y-auto maxWidthHalf break-words  p-2 rounded-md
+              ${!isLastMessage ? 'mr-4' : ''}
+              ${msg.sender == user.email ? 'border' : 'bg-blue-100'}`}>{msg.content}</p>
             </div>
           )
         })}

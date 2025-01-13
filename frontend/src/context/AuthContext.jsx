@@ -152,7 +152,6 @@ export function AuthProvider({children}){
 
     if (response.status == 200) {
       const data = await response.json()
-      console.log(data)
       setUser(data)
     }
     else{

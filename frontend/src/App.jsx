@@ -7,6 +7,8 @@ import Home from './pages/Home'
 import Directs from './pages/Directs'
 import Chat from './pages/Chat'
 
+import NotFound from './pages/NotFound'
+
 export default function App(){
   return(
     <Routes>
@@ -15,7 +17,7 @@ export default function App(){
       <Route path='/login' element={<Login/>}/>
       <Route path='/directs' element={<Directs/>}/>
       <Route path='/chat/:friend' element={<Chat/>}/>
-      <Route path='*' element={<main className="pt-24 w-screen h-screen flex justify-center"><h1 className="font-bold text-3xl">404 Page not found</h1></main>} />
+      <Route path='*' element={<NotFound/>} />
     </Routes>
   )
 }

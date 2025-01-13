@@ -7,7 +7,7 @@ class MessageSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Message
-        fields = ['sender', 'content', 'is_read', 'date']
+        fields = ['sender', 'content', 'is_read', 'date', 'id']
 
     def get_sender(self, obj):
         return obj.sender.email

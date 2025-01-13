@@ -3,6 +3,7 @@ from channels.db import database_sync_to_async
 
 from user.models import User
 from chat.models import Chat, Message
+from chat.serializers import MessageSerializer
 
 import json
 import jwt
@@ -34,9 +35,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
         friend = await self.get_friend(self.scope['url_route']['kwargs']['id'])
 
-        print(f"**************{self.user}*****************")
-        print(f"**************{friend}*****************")
-
         if not friend:
             await self.close()
             return
@@ -67,23 +65,22 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data):
         data = json.loads(text_data)
-        message = data['message']
+        content = data['message']
+
+        message = await self.create_message(self.chat, content)
+        message_json = MessageSerializer(message).data
 
         await self.channel_layer.group_send(
             self.room_group_name,
             {
                 'type': 'chat_message',
-                'message': message,
-                'user': self.user.email,
+                'message': message_json,
             }
         )
-
-        await self.create_message(self.chat, message)
 
     async def chat_message(self, event):
         text_data = json.dumps({
             'message': event['message'],
-            'user': event['user'],
         })
         await self.send(text_data)
 
@@ -117,4 +114,4 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     @database_sync_to_async
     def create_message(self, chat, message):
-        Message.objects.create(chat=chat, content=message, sender=self.user)
+        return Message.objects.create(chat=chat, content=message, sender=self.user)
