@@ -23,13 +23,17 @@ export default function Directs(){
 
             <div className="w-full  flex gap-4">
               <img className="w-12 h-12  border rounded"
-              src={friend.profile_picture != null ? `${API_URL}${friend.profile_picture}` : "https://cdn-icons-png.flaticon.com/512/2105/2105556.png"}/>
+              src={friend.profile_picture !== null ? `${API_URL}${friend.profile_picture}` : "https://cdn-icons-png.flaticon.com/512/2105/2105556.png"}/>
 
               <div className="flex flex-col justify-between">
                 <p>{friend.first_name} {friend.last_name}</p>
                 <div className="flex gap-4 items-center">
-                  <p className={`text-sm text-gray-400`}>{friend.last_message.content != '' ? friend.last_message.content : 'Start a conversation!'}</p>
-                  <p className="text-sm text-gray-600">{friend.last_message.sender && (friend.last_message.sender == user.email ? '-You' : '')}</p>
+                  <p className={`text-sm text-gray-400 ${friend.last_message.sender && friend.last_message.sender !== user.email && !friend.last_message.is_read ?'font-bold text-gray-500':''}`}>
+                    {friend.last_message.content != '' ? friend.last_message.content : 'Start a conversation!'}
+                  </p>
+                  <p className={`text-sm text-gray-600`}>
+                    {friend.last_message.sender && (friend.last_message.sender == user.email ? '-You' : '')}
+                  </p>
                 </div>
               </div>
             </div>

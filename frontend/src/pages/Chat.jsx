@@ -59,7 +59,7 @@ export default function Chat(){
         setMessages(data)
       }
 
-      if (response.status == 400)  {
+      if (response.status == 400) {
         navigate('/home')
       }
     }
@@ -70,7 +70,20 @@ export default function Chat(){
   useEffect(_ => {
     const chat = document.getElementById("chat")
     chat.scrollTop = chat.scrollHeight
-  }, [messages])
+
+    if (messages && messages.length !== 0 && user && messages.at(-1).sender != user.email) {
+      const mark_read = async _ => {
+        await fetch(`${API_URL}/chat/${friend.id}/${messages.at(-1).id}/`,  {
+          method: 'GET',
+          headers: {
+            'Content-type': 'application/json',
+            'Authorization': `Bearer ${tokens.access}`
+          }
+        })
+      }
+      mark_read()
+    }
+  }, [messages, user])
 
   const send_message = _ => {
     if (socket && message) {
