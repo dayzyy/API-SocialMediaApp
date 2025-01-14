@@ -2,7 +2,7 @@ import { FaReact } from "react-icons/fa6";
 import { AiOutlineMessage } from "react-icons/ai";
 
 import { IoAddCircleOutline } from "react-icons/io5";
-import { IoPersonAddOutline } from "react-icons/io5";
+import { PiUsers } from "react-icons/pi";
 import { GoBell } from "react-icons/go";
 import { HiBars3 } from "react-icons/hi2";
 
@@ -28,7 +28,7 @@ export default function Header(){
 
       <div className="w-full md:w-fit flex justify-around md:justify-end md:gap-4 items-center">
           {user && <IoAddCircleOutline onClick={_ => navigate('/add/post')} className="text-4xl  cursor-pointer  text-gray-500"/>}
-          {user && <IoPersonAddOutline onClick={_ => navigate('/directs')} className="text-3xl  cursor-pointer  text-gray-500"/>}
+          {user && <PiUsers onClick={_ => navigate('/friends')} className="text-4xl  cursor-pointer  text-gray-500"/>}
           {user && <GoBell onClick={_ => navigate('/directs')} className="text-3xl  cursor-pointer  text-gray-500"/>}
           {user && <HiBars3 onClick={_ => navigate('/directs')} className="text-4xl  cursor-pointer  text-gray-500"/>}
       </div>

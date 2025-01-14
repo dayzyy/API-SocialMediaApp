@@ -6,6 +6,7 @@ import Login from './pages/Login'
 import Home from './pages/Home'
 import Directs from './pages/Directs'
 import Chat from './pages/Chat'
+import Friends from './pages/Friends'
 
 import AddPost from './pages/AddPost'
 
@@ -20,6 +21,7 @@ export default function App(){
       <Route path='/directs' element={<Directs/>}/>
       <Route path='/chat/:friend' element={<Chat/>}/>
       <Route path='/add/post' element={<AddPost/>}/>
+      <Route path='/friends' element={<Friends/>}/>
       <Route path='*' element={<NotFound/>} />
     </Routes>
   )

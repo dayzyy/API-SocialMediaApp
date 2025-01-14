@@ -25,3 +25,14 @@ def register(request):
 def get_user(request):
     user = UserSerializer(request.user).data
     return Response(user, status=200)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_user_profile(request, email):
+    try:
+        user = User.objects.get(email=email)
+    except User.DoesNotExist:
+        return Response(status=400)
+    
+    data = UserSerializer(user).data
+    return Response(data, status=200)
