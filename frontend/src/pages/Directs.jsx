@@ -11,7 +11,7 @@ export default function Directs(){
   const navigate = useNavigate()
 
   return(
-    <main className="pt-24  flex flex-col gap-1  items-center justify-center">
+    <main className="pt-32  flex flex-col gap-1  items-center justify-center">
       {!user && <Loading/>}
       
       <IoMdArrowBack onClick={_ => navigate('/home')} className="text-3xl  cursor-pointer  self-start  ml-4"/>

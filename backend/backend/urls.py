@@ -13,7 +13,9 @@ urlpatterns = [
     path('tokens/refresh/', TokenRefreshView.as_view(), name='token-refresh'),
 
     path('user/', include('user.urls')),
-    path('chat/', include('chat.urls'))
+    path('chat/', include('chat.urls')),
+    path('post/', include('post.urls'))
+
 ]
 
 if settings.DEBUG:

@@ -7,6 +7,8 @@ import Home from './pages/Home'
 import Directs from './pages/Directs'
 import Chat from './pages/Chat'
 
+import AddPost from './pages/AddPost'
+
 import NotFound from './pages/NotFound'
 
 export default function App(){
@@ -17,6 +19,7 @@ export default function App(){
       <Route path='/login' element={<Login/>}/>
       <Route path='/directs' element={<Directs/>}/>
       <Route path='/chat/:friend' element={<Chat/>}/>
+      <Route path='/add/post' element={<AddPost/>}/>
       <Route path='*' element={<NotFound/>} />
     </Routes>
   )
