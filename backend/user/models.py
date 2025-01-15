@@ -27,7 +27,8 @@ class User(PermissionsMixin, AbstractBaseUser):
 
     profile_picture = models.ImageField(upload_to='images/', null=True, blank=True)
 
-    following = models.ManyToManyField('User', blank=True)
+    following = models.ManyToManyField('User', blank=True, related_name='follow_me')
+    followers = models.ManyToManyField('User', blank=True, related_name='i_follow')
 
     date_created = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)

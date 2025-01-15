@@ -6,6 +6,8 @@ from rest_framework.permissions import IsAuthenticated
 from .models import User
 from .serializers import UserSerializer
 
+from chat.models import Chat
+
 @api_view(['POST'])
 def register(request):
     data = json.loads(request.body)
@@ -36,3 +38,31 @@ def get_user_profile(request, email):
     
     data = UserSerializer(user).data
     return Response(data, status=200)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def follow(request, id):
+    try:
+        friend = User.objects.get(id=id)
+        request.user.following.add(friend)
+        request.user.save()
+    except User.DoesNotExist:
+        return Response(status=400)
+
+    if not Chat.objects.filter(participants=request.user).filter(participants=friend).exists():
+        chat = Chat.objects.create()
+        chat.participants.add(request.user)
+        chat.participants.add(friend)
+        chat.save()
+
+    return Response(status=200)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def unfollow(request, id):
+    try:
+        request.user.following.remove(User.objects.get(id=id))
+    except User.DoesNotExist:
+        return Response(status=400)
+
+    return Response(status=200)

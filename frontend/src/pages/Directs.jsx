@@ -10,13 +10,14 @@ export default function Directs(){
   const {user} = useAuth()
   const navigate = useNavigate()
 
+  if (!user) return <Loading/>
+
   return(
     <main className="pt-32  flex flex-col gap-1  items-center justify-center">
-      {!user && <Loading/>}
-      
       <IoMdArrowBack onClick={_ => navigate('/home')} className="text-3xl  cursor-pointer  self-start  ml-4"/>
-      {user && user.following.map(friend => {
-        console.log(friend)
+      {user.following.length == 0 && <p className="text-gray-500 text-xl">You have no friends:(</p>}
+      
+      {user.following.map(friend => {
         return(
           <div onClick={_ => navigate(`/chat/${friend.first_name}${friend.last_name}`, {state: {friend}})} key={friend.id}
           className="px-4 w-screen h-20  border  flex items-center cursor-pointer  bg-gray-50">

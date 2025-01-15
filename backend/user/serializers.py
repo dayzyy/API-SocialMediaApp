@@ -29,4 +29,5 @@ class UserSerializer(serializers.ModelSerializer):
         return FriendSerializer(following, many=True, context={"user": obj}).data
 
     def get_followers(self, obj):
-        return FriendSerializer(User.objects.filter(following=obj), many=True, context={"user": obj}).data
+        followers = obj.followers.all()
+        return FriendSerializer(followers, many=True, context={"user": obj}).data

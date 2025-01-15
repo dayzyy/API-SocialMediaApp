@@ -18,19 +18,19 @@ export default function Header(){
       <div className="w-full  flex items-center justify-between">
         <div onClick={_ => navigate('/home')} className="flex items-center gap-2  cursor-pointer">
           <FaReact className="text-6xl text-gray-600"/>
-          <p className="text-3xl">Rmedia</p>
+          <p className="text-3xl hover:text-gray-600">Rmedia</p>
         </div>
 
         <div className="flex items-center">
-          {user && <AiOutlineMessage onClick={_ => navigate('/directs')} className="text-3xl  cursor-pointer  text-blue-700"/>}
+          {user && <AiOutlineMessage onClick={_ => navigate('/directs')} className="text-3xl  cursor-pointer  text-blue-700 hover:text-blue-500"/>}
         </div>
       </div>
 
       <div className="w-full md:w-fit flex justify-around md:justify-end md:gap-4 items-center">
-          {user && <IoAddCircleOutline onClick={_ => navigate('/add/post')} className="text-4xl  cursor-pointer  text-gray-500"/>}
-          {user && <PiUsers onClick={_ => navigate('/friends')} className="text-4xl  cursor-pointer  text-gray-500"/>}
-          {user && <GoBell onClick={_ => navigate('/directs')} className="text-3xl  cursor-pointer  text-gray-500"/>}
-          {user && <HiBars3 onClick={_ => navigate('/directs')} className="text-4xl  cursor-pointer  text-gray-500"/>}
+          {user && <IoAddCircleOutline onClick={_ => navigate('/add/post')} className="text-4xl  cursor-pointer  text-gray-500 hover:text-gray-400"/>}
+          {user && <PiUsers onClick={_ => navigate('/friends')} className="text-4xl  cursor-pointer  text-gray-500 hover:text-gray-400"/>}
+          {user && <GoBell onClick={_ => navigate('/directs')} className="text-3xl  cursor-pointer  text-gray-500 hover:text-gray-400"/>}
+          {user && <HiBars3 onClick={_ => navigate('/directs')} className="text-4xl  cursor-pointer  text-gray-500 hover:text-gray-400"/>}
       </div>
     </header>
   )

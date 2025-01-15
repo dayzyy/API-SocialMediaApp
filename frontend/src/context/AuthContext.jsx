@@ -159,8 +159,6 @@ export function AuthProvider({children}){
     }
 
     if (response.status == 401) {
-      console.log('token expired')
-
       const res = await fetch(`${API_URL}/tokens/refresh/`, {
         method: 'POST',
         headers: {
@@ -170,7 +168,6 @@ export function AuthProvider({children}){
       })
 
       if (res.status == 200){
-        console.log('refreshing')
         const data = await res.json()
         localStorage.setItem('tokens', JSON.stringify({...tokens, access: data.access}))
         setTokens(prev => ({...prev, access: data.access}))
@@ -183,7 +180,7 @@ export function AuthProvider({children}){
   }
 
   return (
-    <AuthContext.Provider value={{login, register, user, tokens}}>
+    <AuthContext.Provider value={{login, register, user, get_user, tokens}}>
       {children}
     </AuthContext.Provider>
   )
