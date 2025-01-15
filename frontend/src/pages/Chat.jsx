@@ -95,6 +95,8 @@ export default function Chat(){
     }
   }
 
+  console.log(user)
+
   return(
     <main className="pt-32  h-screen w-screen  flex flex-col justify-between">
       <div className="flex-none  px-4 w-full h-20  border  flex items-center gap-4  bg-gray-50">

@@ -17,12 +17,16 @@ class FriendSerializer(serializers.ModelSerializer):
         return MessageSerializer(chat.messages.all().last()).data
 
 class UserSerializer(serializers.ModelSerializer):
-    friends = serializers.SerializerMethodField()
+    following = serializers.SerializerMethodField()
+    followers = serializers.SerializerMethodField()
 
     class Meta:
         model = User
-        fields = ['id', 'email', 'first_name', 'last_name', 'profile_picture', 'friends', 'date_created']
+        fields = ['id', 'email', 'first_name', 'last_name', 'profile_picture', 'following', 'followers', 'date_created']
 
-    def get_friends(self, obj):
-        friends = obj.friends.all()
-        return FriendSerializer(friends, many=True, context={"user": obj}).data
+    def get_following(self, obj):
+        following = obj.following.all()
+        return FriendSerializer(following, many=True, context={"user": obj}).data
+
+    def get_followers(self, obj):
+        return FriendSerializer(User.objects.filter(following=obj), many=True, context={"user": obj}).data

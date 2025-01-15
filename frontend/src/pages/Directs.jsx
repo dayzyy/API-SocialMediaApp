@@ -15,7 +15,7 @@ export default function Directs(){
       {!user && <Loading/>}
       
       <IoMdArrowBack onClick={_ => navigate('/home')} className="text-3xl  cursor-pointer  self-start  ml-4"/>
-      {user && user.friends.map(friend => {
+      {user && user.following.map(friend => {
         console.log(friend)
         return(
           <div onClick={_ => navigate(`/chat/${friend.first_name}${friend.last_name}`, {state: {friend}})} key={friend.id}
