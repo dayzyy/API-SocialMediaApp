@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
-from .models import User
+from .models import User, Post
 from .forms import UserChangeForm, UserCreationForm
 
 class UserAdmin(BaseUserAdmin):
@@ -34,6 +34,10 @@ class UserAdmin(BaseUserAdmin):
     ordering = ["email"]
     filter_horizontal = []
 
+class PostAdmin(admin.ModelAdmin):
+    list_display = ["__str__", "created_at"]
+
 
 # Now register the new UserAdmin...
 admin.site.register(User, UserAdmin)
+admin.site.register(Post, PostAdmin)

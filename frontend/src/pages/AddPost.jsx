@@ -35,7 +35,7 @@ export default function AddPost(){
       return
     }
 
-    const response = await fetch(`${API_URL}/post/add/`, {
+    const response = await fetch(`${API_URL}/user/post/add/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -47,7 +47,13 @@ export default function AddPost(){
     })
 
     if (response.status == 200) {
-      const data = await response.json()
+      sl.fire({
+        text: "post made successfuly",
+        icon: 'success',
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 1000,
+      })
       setText('')
     }
   }

@@ -3,7 +3,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
-from .models import User
+from .models import User, Post
 from .serializers import UserSerializer
 
 from chat.models import Chat
@@ -64,5 +64,13 @@ def unfollow(request, id):
         request.user.following.remove(User.objects.get(id=id))
     except User.DoesNotExist:
         return Response(status=400)
+
+    return Response(status=200)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def make_post(request):
+    content = json.loads(request.body)['text']
+    post = Post.objects.create(content=content, author=request.user)
 
     return Response(status=200)
