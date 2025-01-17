@@ -69,9 +69,9 @@ export default function Post({post}){
       <div className="px-4">
         <div className="flex items-center gap-1">
           {isLiked ? 
-            <BiSolidLike onClick={handle_click_like} className="text-xl text-blue-400  cursor-pointer"/>
+            <BiSolidLike onClick={handle_click_like} className="text-xl text-blue-400  cursor-pointer  active:scale-150"/>
             :
-            <BiLike onClick={handle_click_like} className="text-xl text-blue-400  cursor-pointer"/>
+            <BiLike onClick={handle_click_like} className="text-xl text-blue-400  cursor-pointer  active:scale-150"/>
           }
           <p className="text-gray-500">{post.likes.length}</p>
         </div>

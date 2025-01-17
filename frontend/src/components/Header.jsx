@@ -8,13 +8,27 @@ import { HiBars3 } from "react-icons/hi2";
 
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
 
 export default function Header(){
-  const {user} = useAuth()
+  const { user } = useAuth()
   const navigate = useNavigate()
+  const [isShown, setIsShown] = useState(true)
+  const lastY = useRef(0)
+
+  useEffect(_ => {
+    const handle_scroll = _ => {
+      if (lastY.current < window.scrollY) setIsShown(false)
+      else setIsShown(true)
+      lastY.current = window.scrollY
+    }
+
+    document.addEventListener('scroll', handle_scroll)
+    return _ => document.removeEventListener('scroll', handle_scroll)
+  }, [])
 
   return (
-    <header className={"fixed top-0 h-fit w-screen  flex flex-col gap-2 md:items-end p-4"}>
+    <header className={`fixed top-0 h-fit w-screen  flex flex-col gap-2 md:items-end p-4  bg-white  duration-200 ${!isShown ? '-translate-y-full' : ''}`}>
       <div className="w-full  flex items-center justify-between">
         <div onClick={_ => navigate('/home')} className="flex items-center gap-2  cursor-pointer">
           <FaReact className="text-6xl text-gray-600"/>
