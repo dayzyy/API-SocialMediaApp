@@ -74,3 +74,25 @@ def make_post(request):
     post = Post.objects.create(content=content, author=request.user)
 
     return Response(status=200)
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def like_post(request, id):
+    try:
+        post = Post.objects.get(id=id)
+    except Post.DoesNotExist:
+        return Response(status=400)
+
+    post.likes.add(request.user)
+    return Response(status=200)
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def unlike_post(request, id):
+    try:
+        post = Post.objects.get(id=id)
+    except Post.DoesNotExist:
+        return Response(status=400)
+
+    post.likes.remove(request.user)
+    return Response(status=200)

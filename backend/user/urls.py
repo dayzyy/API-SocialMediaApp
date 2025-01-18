@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import register, get_user, get_user_profile, follow, unfollow, make_post
+from .views import register, get_user, get_user_profile, follow, unfollow, make_post, like_post, unlike_post
 
 urlpatterns = [
     path('register/', register, name='register'),
@@ -12,4 +12,6 @@ urlpatterns = [
     path('unfollow/<int:id>/', unfollow, name='unfollow-user'),
 
     path('post/add/', make_post, name='make-post'),
+    path('post/<int:id>/like/', like_post, name='like-post'),
+    path('post/<int:id>/unlike/', unlike_post, name='unlike-post')
 ]

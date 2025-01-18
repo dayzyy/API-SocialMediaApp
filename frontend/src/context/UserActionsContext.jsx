@@ -32,8 +32,32 @@ export function UserActionsProvider({children}){
     })
   }
 
+  const like = async id => {
+    if (!tokens) return
+
+    await fetch(`${API_URL}/user/post/${id}/like/`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${tokens.access}`
+      }
+    })
+  }
+
+  const unlike = async id => {
+    if (!tokens) return
+
+    await fetch(`${API_URL}/user/post/${id}/unlike/`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${tokens.access}`
+      }
+    })
+  }
+
   return (
-    <UserActionsContext.Provider value={{follow, unfollow}}>
+    <UserActionsContext.Provider value={{follow, unfollow, like, unlike}}>
       {children}
     </UserActionsContext.Provider>
   )
