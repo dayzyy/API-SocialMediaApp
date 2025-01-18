@@ -7,7 +7,6 @@ import { useState } from "react";
 
 export default function Post({post}){
   const { user } = useAuth()
-  console.log(post)
 
   const format_time = date => {
     const current_date = new Date()
