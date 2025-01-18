@@ -38,6 +38,7 @@ INSTALLED_APPS = [
 
     'user',
     'chat',
+    'notification',
 ]
 
 CHANNEL_LAYERS = {
