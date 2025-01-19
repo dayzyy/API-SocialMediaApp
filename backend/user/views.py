@@ -8,9 +8,9 @@ from .serializers import UserSerializer
 
 from chat.models import Chat
 
-from notification.views import notify_friends
-from notification.models import PostNotification
-from notification.serializers import PostNotificationSerializer
+from notification.views import notify_friends, notify_user
+from notification.models import PostNotification, LikeNotification
+from notification.serializers import PostNotificationSerializer, LikeNotificationSerializer
 
 @api_view(['POST'])
 def register(request):
@@ -101,6 +101,11 @@ def like_post(request, id):
         return Response(status=400)
 
     post.likes.add(request.user)
+
+    like_notification = LikeNotification.objects.create(recipient=post.author, friend=request.user, about=post)
+
+    notify_user(post.author, LikeNotificationSerializer(like_notification).data)
+
     return Response(status=200)
 
 @api_view(['PUT'])
@@ -108,8 +113,10 @@ def like_post(request, id):
 def unlike_post(request, id):
     try:
         post = Post.objects.get(id=id)
+        PostNotification.objects.filter(about=post).delete()
     except Post.DoesNotExist:
         return Response(status=400)
 
     post.likes.remove(request.user)
+
     return Response(status=200)

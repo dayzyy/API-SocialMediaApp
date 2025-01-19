@@ -13,7 +13,8 @@ urlpatterns = [
     path('tokens/refresh/', TokenRefreshView.as_view(), name='token-refresh'),
 
     path('user/', include('user.urls')),
-    path('chat/', include('chat.urls'))
+    path('chat/', include('chat.urls')),
+    path('notification/', include('notification.urls'))
 ]
 
 if settings.DEBUG:

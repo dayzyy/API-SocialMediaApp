@@ -1,11 +1,17 @@
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
+from rest_framework.response import Response
 
+from .models import PostNotification, LikeNotification, FollowNotification
+from .serializers import PostNotificationSerializer, LikeNotificationSerializer, FollowNotificationSerializer
+
+# Notify all the provided user's friends
 def notify_friends(user, serialized_data):
     channel_layer = get_channel_layer()
     friends = list(user.followers.all())
-
-    print(f"**************Notifying {friends}")
 
     for friend in friends:
         async_to_sync(channel_layer.group_send)(
@@ -15,3 +21,30 @@ def notify_friends(user, serialized_data):
                 "data": serialized_data
             }
         )
+
+# Notify the provided user only
+def notify_user(user, serialized_data):
+    channel_layer = get_channel_layer()
+
+    async_to_sync(channel_layer.group_send)(
+        f"notification_group_{user.id}",
+        {
+            "type": "notification_message",
+            "data": serialized_data
+        }
+    )
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_notifications(request):
+    post_notifications = PostNotificationSerializer(PostNotification.objects.filter(recipients=request.user), many=True).data
+    like_notifications = LikeNotificationSerializer(LikeNotification.objects.filter(recipient=request.user), many=True).data
+    follow_notifications = FollowNotificationSerializer(FollowNotification.objects.filter(recipient=request.user), many=True).data
+
+    all_notifications = {
+        "post": post_notifications,
+        "like": like_notifications,
+        "follow": follow_notifications
+    }
+
+    return Response(all_notifications, status=200)
