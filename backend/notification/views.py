@@ -48,3 +48,14 @@ def get_notifications(request):
     }
 
     return Response(all_notifications, status=200)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def new_notifications(request):
+    count = (
+        PostNotification.objects.filter(recipients=request.user, is_read=False).count()
+        + LikeNotification.objects.filter(recipient=request.user, is_read=False).count()
+        + FollowNotification.objects.filter(recipient=request.user, is_read=False).count()
+    )
+
+    return Response({"count": count}, status=200)
