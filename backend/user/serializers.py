@@ -11,6 +11,11 @@ class BasicUserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id', 'first_name', 'last_name', 'profile_picture']
 
+class BasicPostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields = ['id', 'content']
+
 class PostSerializer(serializers.ModelSerializer):
     created_at = serializers.SerializerMethodField()
     author = BasicUserSerializer()

@@ -13,8 +13,6 @@ class PostNotification(Notification):
     recipients = models.ManyToManyField(User, related_name="post_notification")
     about = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="published_post")
 
-    def notification_message(self):
-        return f"{self.about.author.first_name} {self.about.author.last_name} published a post"
 
 class LikeNotification(Notification):
     recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name="like_notification")
@@ -23,3 +21,7 @@ class LikeNotification(Notification):
 
     def notification_message(self):
         return f"{self.friend.first_name} {self.friend.last_name} liked your post"
+
+class FollowNotification(Notification):
+    recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name="follow_notification")
+    friend = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_who_followed")
