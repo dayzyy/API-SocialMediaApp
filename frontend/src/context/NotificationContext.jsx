@@ -10,6 +10,7 @@ const NotificationContext = createContext()
 export function NotificationProvider({children}){
   const [socket, setSocket] = useState(null)
   const [notificationCount, setNotificationCount] = useState(0)
+  const [liveNotifications, setLiveNotifications] = useState([])
   const { user, tokens } = useAuth()
   const sl = Swal
 
@@ -49,6 +50,8 @@ export function NotificationProvider({children}){
         showConfirmButton: false,
         timer: 2000,
       })
+
+      setLiveNotifications(prev => [...prev, notification])
     }
 
     return _ => {
@@ -58,8 +61,26 @@ export function NotificationProvider({children}){
     }
   }, [user])
 
+  const get_notifications = async _ => {
+    if (!tokens) return
+
+    const response = await fetch(`${API_URL}/notification/all/`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${tokens.access}`
+      }
+    })
+
+    if (response.status == 200) {
+      setLiveNotifications([])
+      const data = await response.json()
+      return data
+    }
+  }
+
   return(
-    <NotificationContext.Provider value={{notificationCount}}>
+    <NotificationContext.Provider value={{notificationCount, liveNotifications, get_notifications}}>
       {children}
     </NotificationContext.Provider>
   )

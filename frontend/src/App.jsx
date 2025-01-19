@@ -7,6 +7,7 @@ import Home from './pages/Home'
 import Directs from './pages/Directs'
 import Chat from './pages/Chat'
 import Friends from './pages/Friends'
+import Notifications from './pages/Notifications'
 
 import AddPost from './pages/AddPost'
 
@@ -22,6 +23,7 @@ export default function App(){
       <Route path='/chat/:friend' element={<Chat/>}/>
       <Route path='/add/post' element={<AddPost/>}/>
       <Route path='/friends' element={<Friends/>}/>
+      <Route path='/notifications' element={<Notifications/>}/>
       <Route path='*' element={<NotFound/>} />
     </Routes>
   )

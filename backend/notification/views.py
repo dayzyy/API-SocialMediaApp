@@ -8,6 +8,8 @@ from rest_framework.response import Response
 from .models import PostNotification, LikeNotification, FollowNotification
 from .serializers import PostNotificationSerializer, LikeNotificationSerializer, FollowNotificationSerializer
 
+from itertools import chain
+
 # Notify all the provided user's friends
 def notify_friends(user, serialized_data):
     channel_layer = get_channel_layer()
@@ -41,11 +43,7 @@ def get_notifications(request):
     like_notifications = LikeNotificationSerializer(LikeNotification.objects.filter(recipient=request.user), many=True).data
     follow_notifications = FollowNotificationSerializer(FollowNotification.objects.filter(recipient=request.user), many=True).data
 
-    all_notifications = {
-        "post": post_notifications,
-        "like": like_notifications,
-        "follow": follow_notifications
-    }
+    all_notifications = list(chain(post_notifications, like_notifications, follow_notifications))
 
     return Response(all_notifications, status=200)
 

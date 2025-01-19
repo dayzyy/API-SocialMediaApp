@@ -47,7 +47,7 @@ export default function Header(){
           {user && <PiUsers onClick={_ => navigate('/friends')} className="text-4xl  cursor-pointer  text-gray-500 hover:text-gray-400"/>}
           {user && 
             <div className="relative">
-              <GoBell onClick={_ => navigate('/directs')} className="text-3xl  cursor-pointer  text-gray-500 hover:text-gray-400"/>
+              <GoBell onClick={_ => navigate('/notifications')} className="text-3xl  cursor-pointer  text-gray-500 hover:text-gray-400"/>
               {notificationCount != 0 && <p className="absolute -top-2 right-0  text-sm text-red-600 font-bold">{notificationCount}</p>}
             </div>
           }
