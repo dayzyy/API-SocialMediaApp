@@ -3,7 +3,9 @@ from asgiref.sync import async_to_sync
 
 def notify_friends(user, serialized_data):
     channel_layer = get_channel_layer()
-    friends = list(user.following.all())
+    friends = list(user.followers.all())
+
+    print(f"**************Notifying {friends}")
 
     for friend in friends:
         async_to_sync(channel_layer.group_send)(

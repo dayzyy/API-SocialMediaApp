@@ -50,6 +50,8 @@ def follow(request, id):
         friend = User.objects.get(id=id)
         request.user.following.add(friend)
         request.user.save()
+        friend.followers.add(request.user)
+        friend.save()
     except User.DoesNotExist:
         return Response(status=400)
 
@@ -65,7 +67,12 @@ def follow(request, id):
 @permission_classes([IsAuthenticated])
 def unfollow(request, id):
     try:
-        request.user.following.remove(User.objects.get(id=id))
+        friend = User.objects.get(id=id)
+        request.user.following.remove(friend)
+        request.user.save()
+        friend.followers.remove(request.user)
+        friend.save()
+
     except User.DoesNotExist:
         return Response(status=400)
 
@@ -78,7 +85,7 @@ def make_post(request):
     post = Post.objects.create(content=content, author=request.user)
 
     post_notification = PostNotification.objects.create(about=post)
-    friends = list(request.user.following.all())
+    friends = list(request.user.followers.all())
     post_notification.recipients.set(friends)
 
     notify_friends(request.user, PostNotificationSerializer(post_notification).data)

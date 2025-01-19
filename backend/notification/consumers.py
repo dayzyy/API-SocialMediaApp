@@ -1,4 +1,5 @@
 import jwt
+import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 
@@ -39,7 +40,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         )
 
     async def notification_message(self, event):
-        await self.send(event['data'])
+        await self.send(json.dumps(event['data']))
 
     @database_sync_to_async
     def get_user(self, id):
