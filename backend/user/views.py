@@ -8,6 +8,10 @@ from .serializers import UserSerializer
 
 from chat.models import Chat
 
+from notification.views import notify_friends
+from notification.models import PostNotification
+from notification.serializers import PostNotificationSerializer
+
 @api_view(['POST'])
 def register(request):
     data = json.loads(request.body)
@@ -72,6 +76,12 @@ def unfollow(request, id):
 def make_post(request):
     content = json.loads(request.body)['text']
     post = Post.objects.create(content=content, author=request.user)
+
+    post_notification = PostNotification.objects.create(about=post)
+    friends = list(request.user.following.all())
+    post_notification.recipients.set(friends)
+
+    notify_friends(request.user, PostNotificationSerializer(post_notification).data)
 
     return Response(status=200)
 
