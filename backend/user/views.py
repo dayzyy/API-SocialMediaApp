@@ -9,8 +9,8 @@ from .serializers import UserSerializer
 from chat.models import Chat
 
 from notification.views import notify_friends, notify_user
-from notification.models import PostNotification, LikeNotification
-from notification.serializers import PostNotificationSerializer, LikeNotificationSerializer
+from notification.models import FollowNotification, PostNotification, LikeNotification
+from notification.serializers import PostNotificationSerializer, LikeNotificationSerializer, FollowNotificationSerializer
 
 @api_view(['POST'])
 def register(request):
@@ -52,6 +52,10 @@ def follow(request, id):
         request.user.save()
         friend.followers.add(request.user)
         friend.save()
+
+        follow_notification = FollowNotification.objects.create(recipient=friend, friend=request.user)
+        notify_user(friend, FollowNotificationSerializer(follow_notification).data)
+
     except User.DoesNotExist:
         return Response(status=400)
 
@@ -72,6 +76,8 @@ def unfollow(request, id):
         request.user.save()
         friend.followers.remove(request.user)
         friend.save()
+
+        FollowNotification.objects.filter(recipient=friend, friend=request.user).delete()
 
     except User.DoesNotExist:
         return Response(status=400)

@@ -48,7 +48,7 @@ class FollowNotificationSerializer(serializers.ModelSerializer):
         fields = ['id', 'friend', 'notification_message', 'created_at']
 
     def get_notification_message(self, obj):
-        return f"{obj.about.author.first_name} {obj.about.author.last_name} started following you"
+        return f"{obj.friend.first_name} {obj.friend.last_name} started following you"
 
     def get_created_at(self, obj):
         localized_time = localtime(obj.created_at)
