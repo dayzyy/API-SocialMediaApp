@@ -15,16 +15,17 @@ export function AuthProvider({children}){
   const sl = Swal
 
   useEffect(_ => {
+    if (!tokens && location.pathname != '/login' && location.pathname != '/signup') {
+        navigate('/login')
+    }
+  }, [location])
+
+  useEffect(_ => {
     if (tokens) {
       get_user()
     }
 
-    else {
-      if (location.pathname != '/login' && location.pathname != '/signup') {
-          navigate('/login')
-        }
-    }
-  }, [tokens, location])
+  }, [tokens])
 
   const login = async (email, password) => {
     if (!email || !password) {
@@ -142,6 +143,8 @@ export function AuthProvider({children}){
   const get_user = async _ => {
     if (!tokens) return
 
+    console.log('Getting user...')
+
     const response = await fetch(`${API_URL}/user/get/`, {
       method: 'GET',
       headers: {
@@ -152,6 +155,7 @@ export function AuthProvider({children}){
 
     if (response.status == 200) {
       const data = await response.json()
+      console.log('User -> ' + data)
       setUser(data)
     }
     else{

@@ -59,7 +59,6 @@ export default function Friends(){
     else {
       follow(friend.id)
     }
-    get_user()
   }
 
   if (!user) return <main className="pt-36 -screen h-screen flex justify-center"><Loading/></main>

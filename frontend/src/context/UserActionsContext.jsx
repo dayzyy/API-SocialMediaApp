@@ -6,10 +6,12 @@ import API_URL from "../settings";
 const UserActionsContext = createContext()
 
 export function UserActionsProvider({children}){
-  const { tokens } = useAuth()
+  const { tokens, get_user } = useAuth()
 
   const follow = async id => {
     if (!tokens) return
+
+    console.log('Following...')
 
     await fetch(`${API_URL}/user/follow/${id}/`, {
       method: 'GET',
@@ -18,10 +20,14 @@ export function UserActionsProvider({children}){
         'Authorization': `Bearer ${tokens.access}`
       }
     })
+
+    get_user()
   }
 
   const unfollow = async id => {
     if (!tokens) return
+
+    console.log('Unfollowing')
 
     await fetch(`${API_URL}/user/unfollow/${id}/`, {
       method: 'GET',
@@ -30,6 +36,8 @@ export function UserActionsProvider({children}){
         'Authorization': `Bearer ${tokens.access}`
       }
     })
+
+    get_user()
   }
 
   const like = async id => {

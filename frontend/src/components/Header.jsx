@@ -7,11 +7,13 @@ import { GoBell } from "react-icons/go";
 import { HiBars3 } from "react-icons/hi2";
 
 import { useAuth } from "../context/AuthContext";
+import { useNotifications } from "../context/NotificationContext";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 
 export default function Header(){
   const { user } = useAuth()
+  const { notificationCount } = useNotifications()
   const navigate = useNavigate()
   const [isShown, setIsShown] = useState(true)
   const lastY = useRef(0)
@@ -43,7 +45,12 @@ export default function Header(){
       <div className="w-full md:w-fit flex justify-around md:justify-end md:gap-4 items-center">
           {user && <IoAddCircleOutline onClick={_ => navigate('/add/post')} className="text-4xl  cursor-pointer  text-gray-500 hover:text-gray-400"/>}
           {user && <PiUsers onClick={_ => navigate('/friends')} className="text-4xl  cursor-pointer  text-gray-500 hover:text-gray-400"/>}
-          {user && <GoBell onClick={_ => navigate('/directs')} className="text-3xl  cursor-pointer  text-gray-500 hover:text-gray-400"/>}
+          {user && 
+            <div className="relative">
+              <GoBell onClick={_ => navigate('/directs')} className="text-3xl  cursor-pointer  text-gray-500 hover:text-gray-400"/>
+              {notificationCount != 0 && <p className="absolute -top-2 right-0  text-sm text-red-600 font-bold">{notificationCount}</p>}
+            </div>
+          }
           {user && <HiBars3 onClick={_ => navigate('/directs')} className="text-4xl  cursor-pointer  text-gray-500 hover:text-gray-400"/>}
       </div>
     </header>

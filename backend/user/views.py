@@ -37,6 +37,7 @@ def get_user(request):
 def get_user_profile(request, email):
     try:
         user = User.objects.get(email=email)
+
     except User.DoesNotExist:
         return Response(status=400)
     
@@ -46,6 +47,9 @@ def get_user_profile(request, email):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def follow(request, id):
+    if request.user.following.filter(id=id).exists():
+        return Response({"detail": "already followed"}, status=400)
+
     try:
         friend = User.objects.get(id=id)
         request.user.following.add(friend)
@@ -103,6 +107,9 @@ def make_post(request):
 def like_post(request, id):
     try:
         post = Post.objects.get(id=id)
+        if post.likes.filter(id=request.user.id).exists():
+            return Response({"detail": "already liked"}, status=400)
+
     except Post.DoesNotExist:
         return Response(status=400)
 
@@ -119,7 +126,8 @@ def like_post(request, id):
 def unlike_post(request, id):
     try:
         post = Post.objects.get(id=id)
-        PostNotification.objects.filter(about=post).delete()
+        LikeNotification.objects.filter(about=post, friend=request.user).delete()
+
     except Post.DoesNotExist:
         return Response(status=400)
 

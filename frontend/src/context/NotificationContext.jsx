@@ -9,9 +9,29 @@ const NotificationContext = createContext()
 
 export function NotificationProvider({children}){
   const [socket, setSocket] = useState(null)
-  const [notifications, setNotifications] = useState([])
+  const [notificationCount, setNotificationCount] = useState(0)
   const { user, tokens } = useAuth()
   const sl = Swal
+
+  useEffect(_ => {
+    if (!user) return
+
+    const get_new_notifications_count = async _ => {
+      const response = await fetch(`${API_URL}/notification/new/`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${tokens.access}`
+        }
+      })
+
+      if (response.status == 200) {
+        const data = await response.json()
+        setNotificationCount(data.count)
+      }
+    }
+    get_new_notifications_count()
+  }, [user])
 
   useEffect(_ => {
     if (!user) return
@@ -39,7 +59,7 @@ export function NotificationProvider({children}){
   }, [user])
 
   return(
-    <NotificationContext.Provider value={{notifications}}>
+    <NotificationContext.Provider value={{notificationCount}}>
       {children}
     </NotificationContext.Provider>
   )
