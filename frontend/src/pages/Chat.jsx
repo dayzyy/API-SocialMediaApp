@@ -98,12 +98,14 @@ export default function Chat(){
   return(
     <main className="pt-36  h-screen w-screen  flex flex-col justify-between">
       <div className="flex-none  px-4 w-full h-20  border  flex items-center gap-4  bg-gray-50">
-        <GoBackButton/>
+        <GoBackButton customPath='/directs'/>
 
-        <img className="w-12 h-12  border rounded"
-        src={friend.profile_picture != null ? `${API_URL}${friend.profile_picture}` : "https://cdn-icons-png.flaticon.com/512/2105/2105556.png"}/>
+        <div onClick={_ => navigate(`/profile/${friend.id}`)} className="flex flex-1 gap-4 items-center cursor-pointer">
+          <img className="w-12 h-12  border rounded"
+          src={friend.profile_picture != null ? `${API_URL}${friend.profile_picture}` : "https://cdn-icons-png.flaticon.com/512/2105/2105556.png"}/>
 
-        <p>{friend.first_name} {friend.last_name}</p>
+          <p>{friend.first_name} {friend.last_name}</p>
+        </div>
       </div>
 
       <div id="chat" className="w-full  flex-1  flex flex-col gap-2  overflow-y-auto  p-4">

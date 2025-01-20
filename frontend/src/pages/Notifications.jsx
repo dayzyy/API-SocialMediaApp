@@ -14,6 +14,7 @@ import { format_time } from "../utils/dateUtils";
 export default function Notifications(){
   const { get_notifications, liveNotifications } = useNotifications()
   const [notifications, setNotifications] = useState([])
+  const [loading, setLoading] = useState(true)
   const { tokens } = useAuth()
 
   useEffect(_ => {
@@ -21,15 +22,15 @@ export default function Notifications(){
       const data = await get_notifications()
       console.log(data)
       setNotifications(data)
+      setLoading(false)
     }
 
     fetch_notifications()
   }, [tokens])
 
-  if (!notifications) return <main className="pt-36 flex justify-center"><Loading/></main>
+  if (loading) return <main className="pt-36 flex justify-center"><Loading/></main>
 
   const all_notifications = [...notifications, ...liveNotifications].sort((a, b) => b.created_at.localeCompare(a.created_at))
-  console.log(all_notifications)
   
   return (
     <main className="pt-36 flex flex-col items-center gap-1">

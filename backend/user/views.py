@@ -34,12 +34,25 @@ def get_user(request):
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def get_user_profile(request, email):
+def get_profile_by_email(request, email):
     try:
         user = User.objects.get(email=email)
 
     except User.DoesNotExist:
-        return Response(status=400)
+        return Response(status=404)
+    
+    data = UserSerializer(user).data
+    return Response(data, status=200)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_profile_by_id(request, id):
+    try:
+        user = User.objects.get(id=id)
+
+    except User.DoesNotExist:
+        print(f"***********BAD")
+        return Response(status=404)
     
     data = UserSerializer(user).data
     return Response(data, status=200)
@@ -61,7 +74,7 @@ def follow(request, id):
         notify_user(friend, FollowNotificationSerializer(follow_notification).data)
 
     except User.DoesNotExist:
-        return Response(status=400)
+        return Response(status=404)
 
     if not Chat.objects.filter(participants=request.user).filter(participants=friend).exists():
         chat = Chat.objects.create()
@@ -84,7 +97,7 @@ def unfollow(request, id):
         FollowNotification.objects.filter(recipient=friend, friend=request.user).delete()
 
     except User.DoesNotExist:
-        return Response(status=400)
+        return Response(status=404)
 
     return Response(status=200)
 
@@ -111,7 +124,7 @@ def like_post(request, id):
             return Response({"detail": "already liked"}, status=400)
 
     except Post.DoesNotExist:
-        return Response(status=400)
+        return Response(status=404)
 
     post.likes.add(request.user)
 
@@ -129,7 +142,7 @@ def unlike_post(request, id):
         LikeNotification.objects.filter(about=post, friend=request.user).delete()
 
     except Post.DoesNotExist:
-        return Response(status=400)
+        return Response(status=404)
 
     post.likes.remove(request.user)
 

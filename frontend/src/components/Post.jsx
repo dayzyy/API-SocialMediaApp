@@ -33,7 +33,7 @@ export default function Post({post}){
   } 
 
   return (
-    <div className="flex flex-col gap-4 border rounded-md p-2 bg-gray-50">
+    <div className="w-full flex flex-col gap-4 border rounded-md p-2 bg-gray-50">
       <div className="flex gap-2 items-center hover:bg-gray-100 cursor-pointer">
         <img className="w-11 h-11  border rounded-3xl"
         src={post.author.profile_picture != null ? `${API_URL}${post.author.profile_picture}` : "https://cdn-icons-png.flaticon.com/512/2105/2105556.png"}/>

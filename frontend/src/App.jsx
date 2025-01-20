@@ -4,6 +4,7 @@ import Signup from './pages/Signup'
 import Login from './pages/Login'
 
 import Home from './pages/Home'
+import Profile from './pages/Profile'
 import Directs from './pages/Directs'
 import Chat from './pages/Chat'
 import Friends from './pages/Friends'
@@ -19,6 +20,7 @@ export default function App(){
       <Route path='/home' element={<Home/>}/>
       <Route path='/signup' element={<Signup/>}/>
       <Route path='/login' element={<Login/>}/>
+      <Route path='/profile/:id' element={<Profile/>}/>
       <Route path='/directs' element={<Directs/>}/>
       <Route path='/chat/:friend' element={<Chat/>}/>
       <Route path='/add/post' element={<AddPost/>}/>

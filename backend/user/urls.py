@@ -1,12 +1,13 @@
 from django.urls import path
 
-from .views import register, get_user, get_user_profile, follow, unfollow, make_post, like_post, unlike_post
+from .views import register, get_user, get_profile_by_email, get_profile_by_id, follow, unfollow, make_post, like_post, unlike_post
 
 urlpatterns = [
     path('register/', register, name='register'),
 
     path('get/', get_user, name='get-user'),
-    path('get/<str:email>/', get_user_profile, name='get-user-profile'),
+    path('get/<int:id>/', get_profile_by_id, name='get-user-profile-by-id'),
+    path('get/<str:email>/', get_profile_by_email, name='get-user-profile-by-email'),
 
     path('follow/<int:id>/', follow, name='follow-user'),
     path('unfollow/<int:id>/', unfollow, name='unfollow-user'),
