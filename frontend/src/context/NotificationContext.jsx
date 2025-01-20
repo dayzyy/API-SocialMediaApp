@@ -44,7 +44,7 @@ export function NotificationProvider({children}){
       const notification = JSON.parse(event.data)
 
       sl.fire({
-        text: notification.notification_message,
+        text: notification.message,
         icon: 'info',
         position: 'top-end',
         showConfirmButton: false,
@@ -52,6 +52,7 @@ export function NotificationProvider({children}){
       })
 
       setLiveNotifications(prev => [...prev, notification])
+      setNotificationCount(prev => prev + 1)
     }
 
     return _ => {

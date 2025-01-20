@@ -81,7 +81,7 @@ export default function Friends(){
           </div>
 
           {searchedUser && (searchedUser.id === -1121 ?
-            <p>user not found</p>
+            <p className="text-gray-500">user not found!</p>
             :
             <div className="flex gap-2 justify-between gap-1 hover:bg-gray-50  p-2 cursor-pointer">
               <div className="flex items-end gap-1">

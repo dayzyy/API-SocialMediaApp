@@ -7,15 +7,19 @@ from django.utils.timezone import localtime
 
 class PostNotificationSerializer(serializers.ModelSerializer):
     about = BasicPostSerializer()
+    friend = serializers.SerializerMethodField()
     message = serializers.SerializerMethodField()
     created_at = serializers.SerializerMethodField()
     category = serializers.SerializerMethodField()
 
     class Meta:
         model = PostNotification
-        fields = ['id', 'category', 'about', 'message', 'created_at']
+        fields = ['id', 'category', 'friend', 'about', 'message', 'created_at']
 
-    def get_notification_message(self, obj):
+    def get_friend(self, obj):
+        return BasicUserSerializer(obj.about.author).data
+
+    def get_message(self, obj):
         return f"{obj.about.author.first_name} {obj.about.author.last_name} published a post"
 
     def get_created_at(self, obj):
