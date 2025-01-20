@@ -5,6 +5,8 @@ import Swal from "sweetalert2"
 
 import API_URL from "../settings"
 
+import GoBackButton from "../components/GoHomeButton"
+
 export default function AddPost(){
   const [text, setText] = useState('')
   const { user, tokens } = useAuth()
@@ -59,7 +61,9 @@ export default function AddPost(){
   }
 
   return (
-    <main className="pt-36 flex justify-center">
+    <main className="pt-36 flex flex-col items-center justify-center gap-1">
+      <GoBackButton addCss="self-start ml-4"/>
+
       <div className="w-9/12 md:w-fit flex flex-col gap-4">
         <div className="relative  flex flex-col items-end  border rounded  h-80  w-full md:w-96  p-4">
           <textarea value={text} onChange={e => setText(e.target.value)} placeholder="Add a post"

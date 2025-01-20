@@ -5,9 +5,9 @@ import { useEffect, useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 
 import { BsSendFill } from "react-icons/bs";
-import { IoMdArrowBack } from "react-icons/io";
 
 import Loading from '../components/Loading'
+import GoBackButton from '../components/GoHomeButton';
 
 export default function Chat(){
   const navigate = useNavigate()
@@ -98,7 +98,7 @@ export default function Chat(){
   return(
     <main className="pt-36  h-screen w-screen  flex flex-col justify-between">
       <div className="flex-none  px-4 w-full h-20  border  flex items-center gap-4  bg-gray-50">
-        <IoMdArrowBack onClick={_ => navigate('/directs')} className="text-2xl  cursor-pointer"/>
+        <GoBackButton/>
 
         <img className="w-12 h-12  border rounded"
         src={friend.profile_picture != null ? `${API_URL}${friend.profile_picture}` : "https://cdn-icons-png.flaticon.com/512/2105/2105556.png"}/>

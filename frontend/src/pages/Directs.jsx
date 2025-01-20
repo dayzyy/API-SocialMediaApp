@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom"
 
 import API_URL from "../settings"
 
-import { IoMdArrowBack } from "react-icons/io"
+import GoBackButton from "../components/GoHomeButton"
 
 export default function Directs(){
   const {user} = useAuth()
@@ -13,8 +13,8 @@ export default function Directs(){
   if (!user) return <Loading/>
 
   return(
-    <main className="pt-32  flex flex-col gap-1  items-center justify-center">
-      <IoMdArrowBack onClick={_ => navigate('/home')} className="text-3xl  cursor-pointer  self-start  ml-4"/>
+    <main className="pt-36  flex flex-col gap-1  items-center justify-center">
+      <GoBackButton addCss="self-start  ml-4"/>
       {user.following.length == 0 && <p className="text-gray-500 text-xl">You have no friends:(</p>}
       
       {user.following.map(friend => {
