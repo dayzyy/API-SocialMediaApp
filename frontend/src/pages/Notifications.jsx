@@ -3,7 +3,7 @@ import { useNotifications } from "../context/NotificationContext";
 import { useAuth } from "../context/AuthContext";
 
 export default function Notifications(){
-  const { get_notifications } = useNotifications()
+  const { get_notifications, liveNotifications } = useNotifications()
   const [notifications, setNotifications] = useState([])
   const { tokens } = useAuth()
 
