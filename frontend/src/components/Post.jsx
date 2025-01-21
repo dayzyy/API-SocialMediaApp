@@ -1,40 +1,16 @@
-import { BiLike } from "react-icons/bi";
-import { BiSolidLike } from "react-icons/bi";
-
-import { useAuth } from "../context/AuthContext";
-import { useUserActions } from "../context/UserActionsContext";
-
-import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { format_time } from "../utils/dateUtils";
 
+import LikeButton from "./LikeButton";
+
 export default function Post({post}){
-  const { user } = useAuth()
-  const { like, unlike } = useUserActions()
+  const navigate = useNavigate()
 
-  const is_liked = _ => {
-    return post.likes.some(acc => acc.id === user.id)
-  }
-
-  const [isLiked, setIsLiked] = useState(is_liked())
-  const [likeCount, setLikeCount] = useState(post.likes.length)
-
-  const handle_click_like = id => {
-    if (isLiked) {
-      unlike(id)
-      setLikeCount(prev => prev - 1)
-    }
-    else{
-      like(id)
-      setLikeCount(prev => prev + 1)
-    }
-
-    setIsLiked(prev => !prev)
-  } 
 
   return (
     <div className="w-full flex flex-col gap-4 border rounded-md p-2 bg-gray-50">
-      <div className="flex gap-2 items-center hover:bg-gray-100 cursor-pointer">
+      <div onClick={_ => navigate(`/post/${post.id}`)} className="flex gap-2 items-center hover:bg-gray-100 cursor-pointer">
         <img className="w-11 h-11  border rounded-3xl"
         src={post.author.profile_picture != null ? `${API_URL}${post.author.profile_picture}` : "https://cdn-icons-png.flaticon.com/512/2105/2105556.png"}/>
 
@@ -44,17 +20,9 @@ export default function Post({post}){
         </div>
       </div>
 
-      <p className="px-4  text-gray-900">{post.content}</p>
-
-      <div className="px-4">
-        <div className="flex items-center gap-1">
-          {isLiked ? 
-            <BiSolidLike onClick={_ => handle_click_like(post.id)} className="text-xl text-blue-400  cursor-pointer  active:scale-150"/>
-            :
-            <BiLike onClick={_ => handle_click_like(post.id)} className="text-xl text-blue-400  cursor-pointer  active:scale-150"/>
-          }
-          <p className="text-gray-500">{likeCount}</p>
-        </div>
+      <div className="px-6  flex flex-col gap-3">
+        <p className="text-gray-700">{post.content}</p>
+        <LikeButton post={post} small={true}/>
       </div>
     </div>
   )

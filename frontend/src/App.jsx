@@ -9,6 +9,7 @@ import DirectsPage from './pages/DirectsPage'
 import ChatPage from './pages/ChatPage'
 import FriendsPage from './pages/FriendsPage'
 import NotificationsPage from './pages/NotificationsPage'
+import PostPage from './pages/PostPage'
 
 import AddPostPage from './pages/AddPostPage'
 
@@ -23,7 +24,8 @@ export default function App(){
       <Route path='/profile/:id' element={<ProfilePage/>}/>
       <Route path='/directs' element={<DirectsPage/>}/>
       <Route path='/chat/:friend' element={<ChatPage/>}/>
-      <Route path='/add/post' element={<AddPostPage/>}/>
+      <Route path='/post/:id' element={<PostPage/>}/>
+      <Route path='/post/add' element={<AddPostPage/>}/>
       <Route path='/friends' element={<FriendsPage/>}/>
       <Route path='/notifications' element={<NotificationsPage/>}/>
       <Route path='*' element={<NotFoundPage/>} />

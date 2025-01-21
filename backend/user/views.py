@@ -148,7 +148,7 @@ def unlike_post(request, id):
 
     return Response(status=200)
 
-@api_view(['PUT'])
+@api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_post(request, id):
     try:

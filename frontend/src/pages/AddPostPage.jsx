@@ -26,9 +26,9 @@ export default function AddPost(){
       return
     }
 
-    if (text.length > 200) {
+    if (text.length > 500) {
       sl.fire({
-        text: `Too many words! ${text.length}/200`,
+        text: `Too many words! ${text.length}/500`,
         icon: 'error',
         position: 'top-end',
         showConfirmButton: false,
@@ -70,7 +70,7 @@ export default function AddPost(){
           className="w-full h-5/6  resize-none outline-none  text-gray-700">
           </textarea>
 
-          <p className="text-gray-700">{text.length}/200</p>
+          <p className="text-gray-700">{text.length}/500</p>
         </div>
 
         <button onClick={handle_click} className="self-end  w-32  border rounded-md  p-2  text-gray-500 font-bold">post</button>

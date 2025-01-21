@@ -48,7 +48,7 @@ export default function Header(){
       </div>
 
       <div className="w-full md:w-fit flex justify-around md:justify-end md:gap-4 items-center">
-          {user && <IoAddCircleOutline onClick={_ => navigate('/add/post')} className={`${path_is('/add/post') ? 'text-gray-400' :'text-gray-500'} hover:text-gray-400  text-4xl  cursor-pointer`}/>}
+          {user && <IoAddCircleOutline onClick={_ => navigate('/post/add')} className={`${path_is('/post/add') ? 'text-gray-400' :'text-gray-500'} hover:text-gray-400  text-4xl  cursor-pointer`}/>}
           {user && <PiUsers onClick={_ => navigate('/friends')} className={`${path_is('/friends') ? 'text-gray-400' :'text-gray-500'} hover:text-gray-400  text-4xl  cursor-pointer`}/>}
           {user && 
             <div className="relative">
