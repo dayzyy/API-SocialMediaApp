@@ -4,7 +4,7 @@ from chat.models import Chat
 from chat.serializers import MessageSerializer
 from .models import User, Post
 
-from django.utils.timezone import localtime
+from common.utils import format_time
 
 class BasicUserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -26,8 +26,7 @@ class PostSerializer(serializers.ModelSerializer):
         fields =['id', 'created_at', 'content', 'author', 'likes']
 
     def get_created_at(self, obj):
-        localized_time = localtime(obj.created_at)
-        return localized_time.strftime("%Y %m %d %H %M %S")
+        return  format_time(obj)
 
 class FriendSerializer(serializers.ModelSerializer):
     last_message = serializers.SerializerMethodField()

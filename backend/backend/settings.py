@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'channels',
 
+    'common',
     'user',
     'chat',
     'notification',
