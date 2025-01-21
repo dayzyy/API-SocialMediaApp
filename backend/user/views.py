@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
 from .models import User, Post
-from .serializers import UserSerializer
+from .serializers import UserSerializer, PostSerializer
 
 from chat.models import Chat
 
@@ -147,3 +147,13 @@ def unlike_post(request, id):
     post.likes.remove(request.user)
 
     return Response(status=200)
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def get_post(request, id):
+    try:
+        post = Post.objects.get(id=id)
+        return Response(PostSerializer(post).data, status=200)
+    
+    except Post.DoesNotExist:
+        return Response(status=404)

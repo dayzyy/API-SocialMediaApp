@@ -1,32 +1,32 @@
 import { Routes, Route } from 'react-router-dom'
 
-import Signup from './pages/Signup'
-import Login from './pages/Login'
+import SignupPage from './pages/SignupPage'
+import LoginPage from './pages/LoginPage'
 
-import Home from './pages/Home'
-import Profile from './pages/Profile'
-import Directs from './pages/Directs'
-import Chat from './pages/Chat'
-import Friends from './pages/Friends'
-import Notifications from './pages/Notifications'
+import HomePage from './pages/HomePage'
+import ProfilePage from './pages/ProfilePage'
+import DirectsPage from './pages/DirectsPage'
+import ChatPage from './pages/ChatPage'
+import FriendsPage from './pages/FriendsPage'
+import NotificationsPage from './pages/NotificationsPage'
 
-import AddPost from './pages/AddPost'
+import AddPostPage from './pages/AddPostPage'
 
-import NotFound from './pages/NotFound'
+import NotFoundPage from './pages/NotFoundPage'
 
 export default function App(){
   return(
     <Routes>
-      <Route path='/home' element={<Home/>}/>
-      <Route path='/signup' element={<Signup/>}/>
-      <Route path='/login' element={<Login/>}/>
-      <Route path='/profile/:id' element={<Profile/>}/>
-      <Route path='/directs' element={<Directs/>}/>
-      <Route path='/chat/:friend' element={<Chat/>}/>
-      <Route path='/add/post' element={<AddPost/>}/>
-      <Route path='/friends' element={<Friends/>}/>
-      <Route path='/notifications' element={<Notifications/>}/>
-      <Route path='*' element={<NotFound/>} />
+      <Route path='/home' element={<HomePage/>}/>
+      <Route path='/signup' element={<SignupPage/>}/>
+      <Route path='/login' element={<LoginPage/>}/>
+      <Route path='/profile/:id' element={<ProfilePage/>}/>
+      <Route path='/directs' element={<DirectsPage/>}/>
+      <Route path='/chat/:friend' element={<ChatPage/>}/>
+      <Route path='/add/post' element={<AddPostPage/>}/>
+      <Route path='/friends' element={<FriendsPage/>}/>
+      <Route path='/notifications' element={<NotificationsPage/>}/>
+      <Route path='*' element={<NotFoundPage/>} />
     </Routes>
   )
 }
