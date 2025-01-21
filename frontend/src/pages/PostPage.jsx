@@ -7,6 +7,8 @@ import { format_time } from "../utils/dateUtils";
 
 import GoBackButton from "../components/GoHomeButton";
 import LikeButton from "../components/LikeButton";
+import CommentButton from "../components/CommentButton";
+
 import Loading from "../components/Loading";
 
 export default function PostPage(){
@@ -56,7 +58,10 @@ export default function PostPage(){
 
           <div className="px-4  flex flex-col gap-3">
             <p className="text-gray-700 text-xl">{post.content}</p>
-            <LikeButton post={post}/>
+            <div className="flex items-center gap-6">
+              <LikeButton post={post}/>
+              <CommentButton post={post}/>
+            </div>
           </div>
         </div>
       </div>

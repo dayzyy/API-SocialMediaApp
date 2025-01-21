@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from .models import PostNotification, LikeNotification, FollowNotification
-from user.serializers import BasicUserSerializer, BasicPostSerializer
+from user.serializers import BaseUserSerializer, BasePostSerializer
 
 from common.utils import format_time
 
@@ -24,7 +24,7 @@ class BaseNotificationSerializer(serializers.ModelSerializer):
 
 
 class PostNotificationSerializer(BaseNotificationSerializer):
-    about = BasicPostSerializer()
+    about = BasePostSerializer()
     friend = serializers.SerializerMethodField()
     message = serializers.SerializerMethodField()
 
@@ -33,7 +33,7 @@ class PostNotificationSerializer(BaseNotificationSerializer):
         fields = BaseNotificationSerializer.Meta.fields + ['friend', 'about', 'message']
 
     def get_friend(self, obj):
-        return BasicUserSerializer(obj.about.author).data
+        return BaseUserSerializer(obj.about.author).data
 
     def get_category(self, obj):
         return "post"
@@ -42,8 +42,8 @@ class PostNotificationSerializer(BaseNotificationSerializer):
         return f"{obj.about.author.first_name} {obj.about.author.last_name} published a post"
 
 class LikeNotificationSerializer(BaseNotificationSerializer):
-    friend = BasicUserSerializer()
-    about = BasicPostSerializer()
+    friend = BaseUserSerializer()
+    about = BasePostSerializer()
     message = serializers.SerializerMethodField()
 
     class Meta:
@@ -57,7 +57,7 @@ class LikeNotificationSerializer(BaseNotificationSerializer):
         return f"{obj.friend.first_name} {obj.friend.last_name} liked your post"
 
 class FollowNotificationSerializer(BaseNotificationSerializer):
-    friend = BasicUserSerializer()
+    friend = BaseUserSerializer()
     message = serializers.SerializerMethodField()
 
     class Meta:

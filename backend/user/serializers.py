@@ -6,18 +6,13 @@ from .models import User, Post, Comment
 
 from common.utils import format_time
 
-class BasicUserSerializer(serializers.ModelSerializer):
+class BaseUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'first_name', 'last_name', 'profile_picture']
 
-class BasicPostSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Post
-        fields = ['id', 'content']
-
 class CommentSerializer(serializers.ModelSerializer):
-    author = BasicUserSerializer()
+    author = BaseUserSerializer()
     created_at = serializers.SerializerMethodField()
 
     class Meta:
@@ -27,26 +22,36 @@ class CommentSerializer(serializers.ModelSerializer):
     def get_created_at(self, obj):
         return format_time(obj)
 
-class PostSerializer(serializers.ModelSerializer):
+class BasePostSerializer(serializers.ModelSerializer):
     created_at = serializers.SerializerMethodField()
-    comments = serializers.SerializerMethodField()
-    author = BasicUserSerializer()
-    likes = BasicUserSerializer(many=True)
+    comment_count = serializers.SerializerMethodField()
+    author = BaseUserSerializer()
+    likes = BaseUserSerializer(many=True)
 
     class Meta:
         model = Post
-        fields =['id', 'created_at', 'content', 'author', 'likes', 'comments']
+        fields =['id', 'created_at', 'content', 'author', 'likes', 'comment_count']
+
+    def get_created_at(self, obj):
+        return  format_time(obj)
+
+    def get_comment_count(self, obj):
+        return obj.comments.all().count()
+
+class DetailedPostSerializer(BasePostSerializer):
+    comments = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Post
+        fields = BasePostSerializer.Meta.fields + ['comments']
 
     def get_comments(self, obj):
         comments = obj.comments.all()
         return CommentSerializer(comments, many=True).data
 
-    def get_created_at(self, obj):
-        return  format_time(obj)
-
 class FriendSerializer(serializers.ModelSerializer):
     last_message = serializers.SerializerMethodField()
-    posts = PostSerializer(many=True)
+    posts = BasePostSerializer(many=True)
 
     class Meta:
         model = User
@@ -76,4 +81,4 @@ class UserSerializer(serializers.ModelSerializer):
 
     def get_posts(self, obj):
         posts = obj.posts.all()
-        return PostSerializer(posts, many=True).data
+        return BasePostSerializer(posts, many=True).data
