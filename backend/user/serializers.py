@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 from chat.models import Chat
 from chat.serializers import MessageSerializer
-from .models import User, Post
+from .models import User, Post, Comment
 
 from common.utils import format_time
 
@@ -16,14 +16,30 @@ class BasicPostSerializer(serializers.ModelSerializer):
         model = Post
         fields = ['id', 'content']
 
+class CommentSerializer(serializers.ModelSerializer):
+    author = BasicUserSerializer()
+    created_at = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Comment
+        fields = ['id', 'content', 'author', 'created_at']
+
+    def get_created_at(self, obj):
+        return format_time(obj)
+
 class PostSerializer(serializers.ModelSerializer):
     created_at = serializers.SerializerMethodField()
+    comments = serializers.SerializerMethodField()
     author = BasicUserSerializer()
     likes = BasicUserSerializer(many=True)
 
     class Meta:
         model = Post
-        fields =['id', 'created_at', 'content', 'author', 'likes']
+        fields =['id', 'created_at', 'content', 'author', 'likes', 'comments']
+
+    def get_comments(self, obj):
+        comments = obj.comments.all()
+        return CommentSerializer(comments, many=True).data
 
     def get_created_at(self, obj):
         return  format_time(obj)

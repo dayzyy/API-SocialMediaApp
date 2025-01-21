@@ -16,6 +16,8 @@ export default function Home(){
 
   posts.sort((post1, post2) => post2.created_at.localeCompare(post1.created_at))
 
+  console.log(posts)
+
   return(
     <main className="py-40 px-4">
       {posts.length === 0 ?
