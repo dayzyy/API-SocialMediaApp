@@ -1,8 +1,6 @@
 import { useParams } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { useUserActions } from "../context/UserActionsContext";
 import { useEffect, useState } from "react";
-
-import API_URL from "../settings";
 
 import GoBackButton from "../components/GoHomeButton";
 import LikeButton from "../components/LikeButton";
@@ -18,34 +16,21 @@ import Swal from "sweetalert2";
 
 export default function PostPage(){
   const { id } = useParams()
-  const { tokens } = useAuth()
+  const { get_post } = useUserActions()
   const [post, setPost] = useState(null)
   const [message, setMessage] = useState('')
   const sl = Swal
 
   useEffect(_ => {
-    if (!tokens) return
-
-    const get_post = async _ => {
-      const response = await fetch(`${API_URL}/user/post/get/${id}/`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'applicaton/json',
-          'Authorization': `Bearer ${tokens.access}`
-        }
-      })
-
-      if (response.status == 200) {
-        const data = await response.json()
-        setPost(data)
-      }
+    const fetch_post = async _ => {
+      const post = await get_post(id)
+      setPost(post)
     }
-
-    get_post()
-  }, [tokens, id])
+    
+    fetch_post()
+  }, [id])
 
   const handle_click = _ => {
-    console.log('clicked')
     if (message.length > 200) {
       sl.fire({
         text: `comment is too long ${message.length}/200`,
@@ -56,6 +41,8 @@ export default function PostPage(){
       })
       return
     }
+
+    
   }
 
   if (!post) return <main className="pt-36 flex justify-center"><Loading/></main>

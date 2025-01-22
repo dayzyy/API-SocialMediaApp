@@ -1,10 +1,8 @@
 import { useState } from "react"
 
-import Swal from "sweetalert2"
-
 import { useAuth } from "../context/AuthContext"
+import { useUserActions } from "../context/UserActionsContext"
 
-import API_URL from "../settings"
 import Loading from "../components/Loading"
 import GoBackButton from "../components/GoHomeButton"
 import InfoButton from "../components/InfoButton"
@@ -14,38 +12,14 @@ export default function Friends(){
   const [email, setEmail] = useState('')
   const [searchedUser, setSearchedUser] = useState(null)
   const [toggledOption, setToggledOption] = useState("following")
-  const { user, tokens} = useAuth()
-  const sl = Swal
+  const { user } = useAuth()
+  const { get_profile } = useUserActions()
 
   const handle_search = async _ => {
-    if (!email) {
-      sl.fire({
-        text: "type in an email",
-        icon: 'error',
-        position: 'top-end',
-        showConfirmButton: false,
-        timer: 1000,
-      })
-      return
-    }
-
-    if (!user || !tokens) return
-  
-    const response = await fetch(`${API_URL}/user/get/${encodeURIComponent(email)}/`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${tokens.access}`
-      }
-    })
-
-    if (response.status == 200) {
-      const data = await response.json()
-      setSearchedUser(data)
-    }
-    if (response.status == 404) {
-      setSearchedUser({id: -1121})
-    }
+    const profile = await get_profile(email)
+    
+    if (profile) setSearchedUser(profile)
+    else setSearchedUser({id: -1121})
   }
 
   if (!user) return <main className="pt-36 -screen h-screen flex justify-center"><Loading/></main>

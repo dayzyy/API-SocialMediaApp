@@ -6,7 +6,7 @@ import ToggleFollowButton from "./ToggleFollowButton"
 
 import API_URL from "../settings"
 
-export default function ProfileBar({profile, timestamp, link, small, big, show_follow_button, hover_color}){
+export default function ProfileBar({profile, timestamp, icon, message, link, small, big, show_follow_button, hover_color}){
   const navigate = useNavigate()
 
   let picture_size = 'w-12 h-12'
@@ -36,14 +36,19 @@ export default function ProfileBar({profile, timestamp, link, small, big, show_f
 
   return (
     <div onClick={handle_click} key={profile.id} className={`w-full  flex justify-between items-center  py-2 ${hover_colors[hover_color] || ''}`}>
-      <div className="flex gap-1">
-        <img className={`border rounded  ${picture_size}`}
-        src={profile.profile_picture !== null ? `${API_URL}${profile.profile_picture}` : "https://cdn-icons-png.flaticon.com/512/2105/2105556.png"}/>
+      <div className={`flex ${icon ? 'gap-8' : 'gap-1'}`}>
+        <div className="relative">
+          <img className={`border rounded  ${picture_size}`}
+          src={profile.profile_picture !== null ? `${API_URL}${profile.profile_picture}` : "https://cdn-icons-png.flaticon.com/512/2105/2105556.png"}/>
+
+          {icon && icon}
+        </div>
         
         <div className={`${div_height} flex flex-col justify-between`}>
-          <p className={`${font_size} text-gray-600`}>{profile.first_name} {profile.last_name}</p>
+          {!message && <p className={`${font_size} text-gray-600`}>{profile.first_name} {profile.last_name}</p>}
           {timestamp && <p className={`${secondary_font_size} text-gray-400`}>{format_time(timestamp)}</p>}
           {!timestamp && <p className={`${secondary_font_size} text-gray-400`}>{profile.email}</p>}
+          {message && <p className={`${font_size} text-gray-600`}>{message}</p>}
         </div>
       </div>
 
