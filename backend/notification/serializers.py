@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import PostNotification, LikeNotification, FollowNotification
+from .models import PostNotification, LikeNotification, FollowNotification, CommentNotification
 from user.serializers import BaseUserSerializer, BasePostSerializer
 
 from common.utils import format_time
@@ -55,6 +55,13 @@ class LikeNotificationSerializer(BaseNotificationSerializer):
 
     def get_message(self, obj):
         return f"{obj.friend.first_name} {obj.friend.last_name} liked your post"
+
+class CommentNotificationSerializer(LikeNotificationSerializer):
+    def get_category(self, obj):
+        return "comment"
+
+    def get_message(self, obj):
+        return f"{obj.friend.first_name} {obj.friend.last_name} commented on your post"
 
 class FollowNotificationSerializer(BaseNotificationSerializer):
     friend = BaseUserSerializer()

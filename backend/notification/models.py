@@ -10,18 +10,20 @@ class Notification(models.Model):
     is_read = models.BooleanField(default=False)
 
 class PostNotification(Notification):
-    recipients = models.ManyToManyField(User, related_name="post_notification")
-    about = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="published_post")
+    recipients = models.ManyToManyField(User, related_name="post_notifications")
+    about = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="post_notifications")
 
 
 class LikeNotification(Notification):
-    recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name="like_notification")
-    friend = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_who_liked")
-    about = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="liked_post")
-
-    def notification_message(self):
-        return f"{self.friend.first_name} {self.friend.last_name} liked your post"
+    recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name="received_like_notifications")
+    friend = models.ForeignKey(User, on_delete=models.CASCADE, related_name="sent_like_notifications")
+    about = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="like_notifications")
 
 class FollowNotification(Notification):
-    recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name="follow_notification")
-    friend = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_who_followed")
+    recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name="received_follow_notifications")
+    friend = models.ForeignKey(User, on_delete=models.CASCADE, related_name="sent_follow_notifications")
+
+class CommentNotification(Notification):
+    recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name="received_comment_notifications")
+    friend = models.ForeignKey(User, on_delete=models.CASCADE, related_name="sent_comment_notifications")
+    about = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="comment_notifications")
