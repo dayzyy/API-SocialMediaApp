@@ -1,40 +1,44 @@
 import { useNavigate } from "react-router-dom"
-import { useAuth } from "../context/AuthContext"
-import { useUserActions } from "../context/UserActionsContext"
-import { is_following } from "../utils/accountUtils"
 
-export default function ProfileBar({profile, small}){
-  const { follow, unfollow } = useUserActions()
-  const { user } = useAuth()
+import { format_time } from "../utils/dateUtils"
+
+import ToggleFollowButton from "./ToggleFollowButton"
+
+import API_URL from "../settings"
+
+export default function ProfileBar({profile, post, link, small, big, show_follow_button, hover_color}){
   const navigate = useNavigate()
 
-  const handle_click = (e, profile) => {
-    e.stopPropagation()
+  let picture_size = 'w-12 h-12'
+  if (small) picture_size = 'w-10 h-10'
+  else if (big) picture_size = 'w-16 h-16'
+  const div_height = picture_size.split(' ')[1]
 
-    if (is_following(user, profile)) {
-      unfollow(profile.id)
-    }
-    else {
-      follow(profile.id)
-    }
+  let font_size = 'text-[16px]'
+  let secondary_font_size = 'text-[13px]'
+  if (small) {
+    font_size = 'text-md'
+    secondary_font_size = 'text-sm'
+  }
+  else if(big) {
+    font_size = 'text-xl'
+    secondary_font_size = 'text-md'
   }
 
   return (
-    <div onClick={_ => navigate(`/profile/${profile.id}`)} key={profile.id} className="w-full  flex justify-between items-center  hover:bg-gray-50  p-2 cursor-pointer">
+    <div onClick={_ => navigate(link)} key={profile.id} className={`w-full  flex justify-between items-center  p-2 cursor-pointer  hover:${hover_color}`}>
       <div className="flex items-end gap-1">
-        <img className={`border rounded  ${small ? 'w-10 h-10' : 'w-12 h-12'}`}
+        <img className={`border rounded  ${picture_size}`}
         src={profile.profile_picture !== null ? `${API_URL}${profile.profile_picture}` : "https://cdn-icons-png.flaticon.com/512/2105/2105556.png"}/>
         
-        <p className="text-gray-500">{profile.first_name} {profile.last_name}</p>
+        <div className={`${div_height} flex flex-col justify-between`}>
+          <p className={`${font_size} text-gray-600`}>{profile.first_name} {profile.last_name}</p>
+          {post && <p className={`${secondary_font_size} text-gray-400`}>{format_time(post.created_at)}</p>}
+          {!post && <p className={`${secondary_font_size} text-gray-400`}>{profile.email}</p>}
+        </div>
       </div>
-      <button 
-        className={`rounded-md  z-10 text-sm
-        ${!is_following(user, profile) ? 'bg-blue-600 hover:bg-blue-500 text-white'  : 'border bg-white hover:bg-gray-100'}
-        ${small ? 'h-[2.2rem] px-2' : 'h-[2.5rem] px-4'}
-        `}
-        onClick={e => handle_click(e, profile)}>
-        {is_following(user, profile) ? 'following' : 'follow'}
-      </button>
+
+      {show_follow_button && <ToggleFollowButton profile={profile} small={small} big={big}/>}
     </div>
   )
 }

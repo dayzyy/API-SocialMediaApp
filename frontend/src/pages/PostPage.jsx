@@ -9,6 +9,8 @@ import GoBackButton from "../components/GoHomeButton";
 import LikeButton from "../components/LikeButton";
 import CommentButton from "../components/CommentButton";
 
+import ProfileBar from "../components/ProfileBar";
+
 import Loading from "../components/Loading";
 
 export default function PostPage(){
@@ -46,15 +48,7 @@ export default function PostPage(){
         <GoBackButton/>
 
         <div className="flex flex-col gap-4">
-          <div onClick={_ => navigate(`/profile/${post.author.id}`)} className="flex items-center gap-2 hover:bg-gray-50 p-2 cursor-pointer">
-            <img className="w-16 h-16  border rounded"
-            src={post.author.profile_picture != null ? `${API_URL}${post.author.profile_picture}` : "https://cdn-icons-png.flaticon.com/512/2105/2105556.png"}/>
-
-            <div className="h-16 flex flex-col  justify-between">
-              <p className="text-gray-500 font-bold">{post.author.first_name} {post.author.last_name}</p>
-              <p className="text-gray-400">{format_time(post.created_at)}</p>
-            </div>
-          </div>
+          <ProfileBar profile={post.author} post={post} link={`/profile/${post.author.id}`} big={true} hover_color={'bg-gray-50'}/>
 
           <div className="px-4  flex flex-col gap-3">
             <p className="text-gray-700 text-xl">{post.content}</p>
@@ -65,6 +59,22 @@ export default function PostPage(){
           </div>
         </div>
       </div>
+
+      {
+        post.comments.map(comment => {
+          return (
+            <div onClick={_ => navigate(`/profile/${post.author.id}`)} className="flex items-center gap-2 hover:bg-gray-50 p-2 cursor-pointer">
+              <img className="w-16 h-16  border rounded"
+              src={post.author.profile_picture != null ? `${API_URL}${post.author.profile_picture}` : "https://cdn-icons-png.flaticon.com/512/2105/2105556.png"}/>
+
+              <div className="h-16 flex flex-col  justify-between">
+                <p className="text-gray-500 font-bold">{post.author.first_name} {post.author.last_name}</p>
+                <p className="text-gray-400">{format_time(post.created_at)}</p>
+              </div>
+            </div>
+          )
+        })
+      }
 
     </main>
   )

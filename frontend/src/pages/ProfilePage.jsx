@@ -12,7 +12,7 @@ import ProfileBar from "../components/ProfileBar";
 
 export default function Profile(){
   const { id } = useParams()
-  const { tokens } = useAuth()
+  const { tokens, user } = useAuth()
   const [profile, setProfile] = useState(null)
   const [toggledOption, setToggledOption] = useState("posts")
 
@@ -37,7 +37,7 @@ export default function Profile(){
   }, [tokens])
 
 
-  if (!profile) return <main className="pt-36 flex justify-center"><Loading/></main>
+  if (!profile || !user) return <main className="pt-36 flex justify-center"><Loading/></main>
   console.log(profile)
 
   return (
@@ -45,15 +45,7 @@ export default function Profile(){
       <div className="w-full md:w-[750px]  flex flex-col gap-8">
         <GoBackButton addCss="self-start"/>
 
-        <div className="flex w-full gap-2">
-          <img className="w-16 h-16  border rounded"
-          src={profile.profile_picture != null ? `${API_URL}${profile.profile_picture}` : "https://cdn-icons-png.flaticon.com/512/2105/2105556.png"}/>
-
-          <div className="flex flex-col justify-between">
-            <p className="text-gray-600 text-xl">{profile.first_name} {profile.last_name}</p>
-            <p className="text-gray-500 text-md">{profile.email}</p>
-          </div>
-        </div>
+        <ProfileBar profile={profile} link={`/profile/${profile.id}`} big={true} hover_color={'bg-gray-50'} show_follow_button={true}/>
 
         <div className="w-full flex justify-around">
           <InfoButton text={`Posts ~${profile.posts.length}`} toggled={toggledOption === "posts"} on_click={_ => setToggledOption("posts")}/>
@@ -67,11 +59,11 @@ export default function Profile(){
           }
 
           {toggledOption === "following" &&
-            profile.following.map(friend => <ProfileBar key={friend.id} profile={friend} />)
+            profile.following.map(friend => <ProfileBar key={friend.id} profile={friend} link={`/profile/${friend.id}`} hover_color={'bg-gray-50'} show_follow_button={true}/>)
           }
 
           {toggledOption === "followers" &&
-            profile.followers.map(friend => <ProfileBar key={friend.id} profile={friend} />)
+            profile.followers.map(friend => <ProfileBar key={friend.id} profile={friend} link={`/profile/${friend.id}`} hover_color={'bg-gray-50'} show_follow_button={true}/>)
           }
         </div>
       </div>

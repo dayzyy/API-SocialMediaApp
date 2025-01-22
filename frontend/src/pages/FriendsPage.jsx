@@ -3,7 +3,6 @@ import { useState } from "react"
 import Swal from "sweetalert2"
 
 import { useAuth } from "../context/AuthContext"
-import { useNavigate } from "react-router-dom"
 
 import API_URL from "../settings"
 import Loading from "../components/Loading"
@@ -11,14 +10,11 @@ import GoBackButton from "../components/GoHomeButton"
 import InfoButton from "../components/InfoButton"
 import ProfileBar from "../components/ProfileBar"
 
-import { is_following } from "../utils/accountUtils"
-
 export default function Friends(){
   const [email, setEmail] = useState('')
   const [searchedUser, setSearchedUser] = useState(null)
   const [toggledOption, setToggledOption] = useState("following")
   const { user, tokens} = useAuth()
-  const navigate = useNavigate()
   const sl = Swal
 
   const handle_search = async _ => {
@@ -73,7 +69,7 @@ export default function Friends(){
           {searchedUser && (searchedUser.id === -1121 ?
             <p className="text-gray-500">user not found!</p>
             :
-            <ProfileBar profile={searchedUser} small={true} />)
+            <ProfileBar profile={searchedUser} link={`/profile/${searchedUser.id}`} small={true} hover_color={'bg-gray-50'} show_follow_button={true}/>)
           }
         </div>
 
@@ -92,7 +88,7 @@ export default function Friends(){
             )}
 
             {
-              accounts.map(friend => <ProfileBar key={friend.id} profile={friend} />)
+              accounts.map(friend => <ProfileBar key={friend.id} profile={friend} link={`/profile/${friend.id}`} hover_color={'bg-gray-50'} show_follow_button={true}/>)
             }
           </div>
         </div>
