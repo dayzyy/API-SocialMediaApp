@@ -69,7 +69,7 @@ export default function Friends(){
           {searchedUser && (searchedUser.id === -1121 ?
             <p className="text-gray-500">user not found!</p>
             :
-            <ProfileBar profile={searchedUser} link={`/profile/${searchedUser.id}`} small={true} hover_color={'bg-gray-50'} show_follow_button={true}/>)
+            <ProfileBar profile={searchedUser} link={`/profile/${searchedUser.id}`} small={true} hover_color={'gray-50'} show_follow_button={true}/>)
           }
         </div>
 
@@ -88,7 +88,7 @@ export default function Friends(){
             )}
 
             {
-              accounts.map(friend => <ProfileBar key={friend.id} profile={friend} link={`/profile/${friend.id}`} hover_color={'bg-gray-50'} show_follow_button={true}/>)
+              accounts.map(friend => <ProfileBar key={friend.id} profile={friend} link={`/profile/${friend.id}`} hover_color={'gray-50'} show_follow_button={true}/>)
             }
           </div>
         </div>

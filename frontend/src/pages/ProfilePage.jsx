@@ -34,18 +34,17 @@ export default function Profile(){
       }
     }
     get_profile()
-  }, [tokens])
+  }, [tokens, id])
 
 
   if (!profile || !user) return <main className="pt-36 flex justify-center"><Loading/></main>
-  console.log(profile)
 
   return (
     <main className="pt-36 px-4 w-screen flex flex-col items-center">
       <div className="w-full md:w-[750px]  flex flex-col gap-8">
         <GoBackButton addCss="self-start"/>
 
-        <ProfileBar profile={profile} link={`/profile/${profile.id}`} big={true} hover_color={'bg-gray-50'} show_follow_button={true}/>
+        <ProfileBar profile={profile} big={true} show_follow_button={true}/>
 
         <div className="w-full flex justify-around">
           <InfoButton text={`Posts ~${profile.posts.length}`} toggled={toggledOption === "posts"} on_click={_ => setToggledOption("posts")}/>
@@ -59,11 +58,11 @@ export default function Profile(){
           }
 
           {toggledOption === "following" &&
-            profile.following.map(friend => <ProfileBar key={friend.id} profile={friend} link={`/profile/${friend.id}`} hover_color={'bg-gray-50'} show_follow_button={true}/>)
+            profile.following.map(friend => <ProfileBar key={friend.id} profile={friend} link={`/profile/${friend.id}`} hover_color={'gray-50'} show_follow_button={true}/>)
           }
 
           {toggledOption === "followers" &&
-            profile.followers.map(friend => <ProfileBar key={friend.id} profile={friend} link={`/profile/${friend.id}`} hover_color={'bg-gray-50'} show_follow_button={true}/>)
+            profile.followers.map(friend => <ProfileBar key={friend.id} profile={friend} link={`/profile/${friend.id}`} hover_color={'gray-50'} show_follow_button={true}/>)
           }
         </div>
       </div>
