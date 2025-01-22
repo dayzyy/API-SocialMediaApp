@@ -5,8 +5,8 @@ from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 from rest_framework.response import Response
 
-from .models import PostNotification, LikeNotification, FollowNotification
-from .serializers import PostNotificationSerializer, LikeNotificationSerializer, FollowNotificationSerializer
+from .models import PostNotification, LikeNotification, FollowNotification, CommentNotification
+from .serializers import PostNotificationSerializer, LikeNotificationSerializer, FollowNotificationSerializer, CommentNotificationSerializer
 
 from itertools import chain
 
@@ -42,8 +42,9 @@ def get_notifications(request):
     post_notifications = PostNotificationSerializer(PostNotification.objects.filter(recipients=request.user), many=True).data
     like_notifications = LikeNotificationSerializer(LikeNotification.objects.filter(recipient=request.user), many=True).data
     follow_notifications = FollowNotificationSerializer(FollowNotification.objects.filter(recipient=request.user), many=True).data
+    comment_notifications = CommentNotificationSerializer(CommentNotification.objects.filter(recipient=request.user), many=True).data
 
-    all_notifications = list(chain(post_notifications, like_notifications, follow_notifications))
+    all_notifications = list(chain(post_notifications, like_notifications, follow_notifications, comment_notifications))
 
     return Response(all_notifications, status=200)
 
@@ -54,6 +55,7 @@ def new_notifications(request):
         PostNotification.objects.filter(recipients=request.user, is_read=False).count()
         + LikeNotification.objects.filter(recipient=request.user, is_read=False).count()
         + FollowNotification.objects.filter(recipient=request.user, is_read=False).count()
+        + CommentNotification.objects.filter(recipient=request.user, is_read=False).count()
     )
 
     return Response({"count": count}, status=200)

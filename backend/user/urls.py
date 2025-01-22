@@ -16,5 +16,5 @@ urlpatterns = [
     path('post/get/<int:id>/', get_post, name='get-post'),
     path('post/<int:id>/like/', like_post, name='like-post'),
     path('post/<int:id>/unlike/', unlike_post, name='unlike-post'),
-    path('post/<int:id>/comment/', make_comment, name='comment-on-post')
+    path('post/<int:post_id>/comment/', make_comment, name='comment-on-post')
 ]

@@ -16,7 +16,7 @@ import Swal from "sweetalert2";
 
 export default function PostPage(){
   const { id } = useParams()
-  const { get_post } = useUserActions()
+  const { get_post, comment } = useUserActions()
   const [post, setPost] = useState(null)
   const [message, setMessage] = useState('')
   const sl = Swal
@@ -30,7 +30,9 @@ export default function PostPage(){
     fetch_post()
   }, [id])
 
-  const handle_click = _ => {
+  const handle_click = async _ => {
+    if (!post) return
+
     if (message.length > 200) {
       sl.fire({
         text: `comment is too long ${message.length}/200`,
@@ -42,7 +44,8 @@ export default function PostPage(){
       return
     }
 
-    
+    const status = await comment(message, post.id)
+    if (status == 200) setMessage('')
   }
 
   if (!post) return <main className="pt-36 flex justify-center"><Loading/></main>

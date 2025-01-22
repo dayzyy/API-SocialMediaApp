@@ -168,7 +168,7 @@ def make_comment(request, post_id):
         return Response(status=404)
 
     content = json.loads(request.body)['text']
-    Comment.objects.create(content=content, author=request.user, about=post)
+    Comment.objects.create(content=content, author=request.user, post=post)
     notification = CommentNotification.objects.create(recipient=post.author, friend=request.user, about=post)
     notify_user(post.author, CommentNotificationSerializer(notification).data)
 

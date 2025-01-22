@@ -9,6 +9,7 @@ import ProfileBar from "../components/ProfileBar";
 import { IoMdPersonAdd } from "react-icons/io";
 import { BiSolidLike } from "react-icons/bi";
 import { PiNewspaper } from "react-icons/pi";
+import { GoComment } from "react-icons/go";
 
 export default function Notifications(){
   const { get_notifications, liveNotifications } = useNotifications()
@@ -30,6 +31,7 @@ export default function Notifications(){
     if (category == "follow") return <IoMdPersonAdd className="absolute -bottom-2 -right-3  text-2xl text-gray-500"/>
     else if (category == "like") return <BiSolidLike className="absolute -bottom-2 -right-3  text-xl text-blue-500"/>
     else if (category == "post") return <PiNewspaper className="absolute -bottom-2 -right-3  text-xl text-green-600"/>
+    else if (category == "comment") return <GoComment className="absolute -bottom-2 -right-3  text-xl text-green-500"/>
   }
 
   if (loading) return <main className="pt-36 flex justify-center"><Loading/></main>

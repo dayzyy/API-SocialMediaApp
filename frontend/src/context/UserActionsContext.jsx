@@ -13,8 +13,6 @@ export function UserActionsProvider({children}){
   const follow = async id => {
     if (!tokens) return
 
-    console.log('Following...')
-
     await fetch(`${API_URL}/user/follow/${id}/`, {
       method: 'GET',
       headers: {
@@ -28,8 +26,6 @@ export function UserActionsProvider({children}){
 
   const unfollow = async id => {
     if (!tokens) return
-
-    console.log('Unfollowing')
 
     await fetch(`${API_URL}/user/unfollow/${id}/`, {
       method: 'GET',
@@ -160,8 +156,32 @@ export function UserActionsProvider({children}){
     }
   }
 
+  const comment = async (text, id) => {
+    if (!tokens) return
+
+    const response = await fetch(`${API_URL}/user/post/${id}/comment/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'applicaton/json',
+        'Authorization': `Bearer ${tokens.access}`
+      },
+      body: JSON.stringify({text: text})
+    })
+
+    if (response.status == 200) {
+      sl.fire({
+        text: "comment added",
+        icon: 'success',
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 1000,
+      })
+      return 200
+    }
+  }
+
   return (
-    <UserActionsContext.Provider value={{follow, unfollow, like, unlike, get_post, get_profile, make_post}}>
+    <UserActionsContext.Provider value={{follow, unfollow, like, unlike, get_post, get_profile, make_post, comment}}>
       {children}
     </UserActionsContext.Provider>
   )
