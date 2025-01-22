@@ -3,14 +3,14 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
-from .models import User, Post
+from .models import User, Post, Comment
 from .serializers import DetailedPostSerializer, UserSerializer
 
 from chat.models import Chat
 
 from notification.views import notify_friends, notify_user
-from notification.models import FollowNotification, PostNotification, LikeNotification
-from notification.serializers import PostNotificationSerializer, LikeNotificationSerializer, FollowNotificationSerializer
+from notification.models import FollowNotification, PostNotification, LikeNotification, CommentNotification
+from notification.serializers import PostNotificationSerializer, LikeNotificationSerializer, FollowNotificationSerializer, CommentNotificationSerializer
 
 @api_view(['POST'])
 def register(request):
@@ -70,8 +70,8 @@ def follow(request, id):
         friend.followers.add(request.user)
         friend.save()
 
-        follow_notification = FollowNotification.objects.create(recipient=friend, friend=request.user)
-        notify_user(friend, FollowNotificationSerializer(follow_notification).data)
+        notification = FollowNotification.objects.create(recipient=friend, friend=request.user)
+        notify_user(friend, FollowNotificationSerializer(notification).data)
 
     except User.DoesNotExist:
         return Response(status=404)
@@ -107,11 +107,11 @@ def make_post(request):
     content = json.loads(request.body)['text']
     post = Post.objects.create(content=content, author=request.user)
 
-    post_notification = PostNotification.objects.create(about=post)
+    notification = PostNotification.objects.create(about=post)
     friends = list(request.user.followers.all())
-    post_notification.recipients.set(friends)
+    notification.recipients.set(friends)
 
-    notify_friends(request.user, PostNotificationSerializer(post_notification).data)
+    notify_friends(request.user, PostNotificationSerializer(notification).data)
 
     return Response(status=200)
 
@@ -128,9 +128,9 @@ def like_post(request, id):
 
     post.likes.add(request.user)
 
-    like_notification = LikeNotification.objects.create(recipient=post.author, friend=request.user, about=post)
+    notification = LikeNotification.objects.create(recipient=post.author, friend=request.user, about=post)
 
-    notify_user(post.author, LikeNotificationSerializer(like_notification).data)
+    notify_user(post.author, LikeNotificationSerializer(notification).data)
 
     return Response(status=200)
 
@@ -157,3 +157,19 @@ def get_post(request, id):
     
     except Post.DoesNotExist:
         return Response(status=404)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def make_comment(request, post_id):
+    try:
+        post = Post.objects.get(id=post_id)
+    
+    except Post.DoesNotExist:
+        return Response(status=404)
+
+    content = json.loads(request.body)['text']
+    Comment.objects.create(content=content, author=request.user, about=post)
+    notification = CommentNotification.objects.create(recipient=post.author, friend=request.user, about=post)
+    notify_user(post.author, CommentNotificationSerializer(notification).data)
+
+    return Response(status=200)
