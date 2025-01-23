@@ -19,12 +19,14 @@ def register(request):
     try:
         User.objects.get(email=data['email'])
         return Response(status=409)
-
     except User.DoesNotExist:
         pass
 
-    User.objects.create_user(data['email'], password=data['password'], first_name=data['first_name'], last_name=data['last_name'])
-    return Response(status=200)
+    try:
+        User.objects.create_user(data['email'], password=data['password'], first_name=data['first_name'], last_name=data['last_name'])
+        return Response(status=200)
+    except Exception:
+        return Response(status=500)
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -37,25 +39,20 @@ def get_user(request):
 def get_profile_by_email(request, email):
     try:
         user = User.objects.get(email=email)
-
+        data = UserSerializer(user).data
+        return Response(data, status=200)
     except User.DoesNotExist:
         return Response(status=404)
-    
-    data = UserSerializer(user).data
-    return Response(data, status=200)
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_profile_by_id(request, id):
     try:
         user = User.objects.get(id=id)
-
+        data = UserSerializer(user).data
+        return Response(data, status=200)
     except User.DoesNotExist:
-        print(f"***********BAD")
         return Response(status=404)
-    
-    data = UserSerializer(user).data
-    return Response(data, status=200)
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -105,7 +102,11 @@ def unfollow(request, id):
 @permission_classes([IsAuthenticated])
 def make_post(request):
     content = json.loads(request.body)['text']
-    post = Post.objects.create(content=content, author=request.user)
+
+    try:
+        post = Post.objects.create(content=content, author=request.user)
+    except Exception:
+        return Response(status=500)
 
     notification = PostNotification.objects.create(about=post)
     friends = list(request.user.followers.all())
@@ -154,7 +155,7 @@ def get_post(request, id):
     try:
         post = Post.objects.get(id=id)
         return Response(DetailedPostSerializer(post).data, status=200)
-    
+
     except Post.DoesNotExist:
         return Response(status=404)
 
@@ -163,7 +164,6 @@ def get_post(request, id):
 def make_comment(request, post_id):
     try:
         post = Post.objects.get(id=post_id)
-    
     except Post.DoesNotExist:
         return Response(status=404)
 
