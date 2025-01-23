@@ -180,8 +180,22 @@ export function UserActionsProvider({children}){
     }
   }
 
+  const mark_message_as_read = async (friend_id, message_id) => {
+    await fetch(`${API_URL}/chat/${friend_id}/${message_id}/`,  {
+      method: 'PUT',
+      headers: {
+        'Content-type': 'application/json',
+        'Authorization': `Bearer ${tokens.access}`
+      }
+    })
+  }
+
+  const mark_notification_as_read = _ => {
+
+  }
+
   return (
-    <UserActionsContext.Provider value={{follow, unfollow, like, unlike, get_post, get_profile, make_post, comment}}>
+    <UserActionsContext.Provider value={{follow, unfollow, like, unlike, get_post, get_profile, make_post, comment, mark_message_as_read, mark_notification_as_read}}>
       {children}
     </UserActionsContext.Provider>
   )

@@ -55,7 +55,7 @@ class FriendSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'email', 'first_name', 'last_name', 'profile_picture', 'posts','date_created', 'last_message']
+        fields = ['id', 'email', 'first_name', 'last_name', 'profile_picture', 'posts','created_at', 'last_message']
 
     def get_last_message(self, obj):
         user = self.context['user']
@@ -69,7 +69,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'email', 'first_name', 'last_name', 'profile_picture', 'following', 'followers', 'posts', 'date_created']
+        fields = ['id', 'email', 'first_name', 'last_name', 'profile_picture', 'following', 'followers', 'posts', 'created_at']
 
     def get_following(self, obj):
         following = obj.following.all()

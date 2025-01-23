@@ -9,6 +9,7 @@ from .models import PostNotification, LikeNotification, FollowNotification, Comm
 from .serializers import PostNotificationSerializer, LikeNotificationSerializer, FollowNotificationSerializer, CommentNotificationSerializer
 
 from itertools import chain
+import json
 
 # Notify all the provided user's friends
 def notify_friends(user, serialized_data):
@@ -59,3 +60,38 @@ def new_notifications(request):
     )
 
     return Response({"count": count}, status=200)
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def mark_as_read(request, id):
+    try:
+        category = json.loads(request.body)['category']
+    except Exception:
+        return Response(status=500)
+
+    notification_models = {
+        "follow": FollowNotification,
+        "like": LikeNotification,
+        "comment": CommentNotification,
+        "post": PostNotification
+    }
+
+    model = notification_models.get(category)
+    if not model:
+        return Response(400)
+
+    try:
+        notification = model.objects.get(id=id)
+    except model.DoesNotExist:
+        return Response(status=404)
+
+    if model == PostNotification:
+        if not notification.recipients.filter(id=request.user.id):
+            return Response(status=400)
+        else:
+            notification.is_read = True
+            notification.save()
+            return Response(status=200)
+    else:
+        if not notification.recipient == request.user:
+            return Response(status=400)

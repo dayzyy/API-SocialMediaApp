@@ -5,6 +5,8 @@ from user.models import User
 from chat.models import Chat, Message
 from chat.serializers import MessageSerializer
 
+from notification.views import notify_user
+
 import json
 import jwt
 from backend.settings import SECRET_KEY
@@ -33,16 +35,16 @@ class ChatConsumer(AsyncWebsocketConsumer):
             await self.close()
             return
 
-        friend = await self.get_friend(self.scope['url_route']['kwargs']['id'])
+        self.friend = await self.get_friend(self.scope['url_route']['kwargs']['id'])
 
-        if not friend:
+        if not self.friend:
             await self.close()
             return
 
-        self.chat = await self.get_chat(friend)
+        self.chat = await self.get_chat()
         if not self.chat:
-            if await self.is_following(friend):
-                self.chat = await self.create_chat(friend)
+            if await self.is_following():
+                self.chat = await self.create_chat()
             else:
                 await self.close()
                 return
@@ -99,19 +101,22 @@ class ChatConsumer(AsyncWebsocketConsumer):
             return None
 
     @database_sync_to_async
-    def get_chat(self, friend):
-        return Chat.objects.filter(participants=self.user).filter(participants=friend).first()
+    def get_chat(self):
+        return Chat.objects.filter(participants=self.user).filter(participants=self.friend).first()
 
     @database_sync_to_async
-    def is_following(self, friend):
-        return self.user.friends.filter(id=friend.id).exists()
+    def is_following(self):
+        return self.user.friends.filter(id=self.friend.id).exists()
 
     @database_sync_to_async
-    def create_chat(self, friend):
+    def create_chat(self):
         chat = Chat.objects.create()
-        chat.participants.add(self.user, friend)
+        chat.participants.add(self.user, self.friend)
         return chat
 
     @database_sync_to_async
     def create_message(self, chat, message):
-        return Message.objects.create(chat=chat, content=message, sender=self.user)
+        message = Message.objects.create(chat=chat, content=message, sender=self.user)
+        if message:
+            notify_user(self.friend, {"message": f"{self.friend.first_name} {self.friend.last_name} sent you a message"})
+            return message

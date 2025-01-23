@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNotifications } from "../context/NotificationContext";
 import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 import Loading from "../components/Loading";
 import GoBackButton from "../components/GoHomeButton";
@@ -16,6 +17,7 @@ export default function Notifications(){
   const [notifications, setNotifications] = useState([])
   const [loading, setLoading] = useState(true)
   const { tokens } = useAuth()
+  const navigate = useNavigate()
 
   useEffect(_ => {
     const fetch_notifications = async _ => {
@@ -34,6 +36,21 @@ export default function Notifications(){
     else if (category == "comment") return <GoComment className="absolute -bottom-2 -right-3  text-xl text-green-500"/>
   }
 
+  const get_handler = notification => {
+    let redirect = _ => {}
+
+    if (notification.category == "follow") redirect = _ => navigate(`/profile/${notification.friend.id}`)
+    else if (notification.category == "like") redirect = _ => navigate(`/post/${notification.about.id}`)
+    else if (notification.category == "post") redirect = _ => navigate(`/post/${notification.about.id}`)
+    else if (notification.category == "comment") redirect = _ => navigate(`/post/${notification.about.id}`)
+
+    return (
+      _ => {
+        redirect()
+      }
+    )
+  }
+
   if (loading) return <main className="pt-36 flex justify-center"><Loading/></main>
 
   const all_notifications = [...notifications, ...liveNotifications].sort((a, b) => b.created_at.localeCompare(a.created_at))
@@ -46,7 +63,7 @@ export default function Notifications(){
         { all_notifications.length === 0 ? <p className="text-gray-500 text-xl">No notifications</p> :
           all_notifications.map(notification => {
             return (
-              <div key={notification.id} className="px-4 w-screen h-20  border  flex items-center cursor-pointer  bg-gray-50">
+              <div key={notification.id} className={`px-4 w-screen h-20  border  flex items-center cursor-pointer  ${notification.is_read ? 'bg-gray-50' : 'bg-gray-100'}`}>
                 <ProfileBar profile={notification.friend} timestamp={notification.created_at} icon={get_icon(notification.category)} message={notification.message}/>
               </div>
             )

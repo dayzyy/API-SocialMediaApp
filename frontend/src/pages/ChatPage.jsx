@@ -3,6 +3,7 @@ import API_URL from '../settings'
 import { useLocation, useNavigate } from "react-router-dom"
 import { useEffect, useState } from 'react'
 import { useAuth } from '../context/AuthContext'
+import { useUserActions } from '../context/UserActionsContext';
 
 import { BsSendFill } from "react-icons/bs";
 
@@ -14,6 +15,7 @@ export default function Chat(){
   const location = useLocation()
   const friend = location.state?.friend
   const {user, tokens} = useAuth()
+  const { mark_message_as_read } = useUserActions()
 
   const [message, setMessage] = useState('')
   const [messages, setMessages] = useState([])
@@ -73,14 +75,9 @@ export default function Chat(){
 
     if (messages && messages.length !== 0 && user && messages.at(-1).sender != user.email) {
       const mark_read = async _ => {
-        await fetch(`${API_URL}/chat/${friend.id}/${messages.at(-1).id}/`,  {
-          method: 'GET',
-          headers: {
-            'Content-type': 'application/json',
-            'Authorization': `Bearer ${tokens.access}`
-          }
-        })
+        await mark_message_as_read(friend.id ,messages.at(-1).id)
       }
+
       mark_read()
     }
   }, [messages, user])

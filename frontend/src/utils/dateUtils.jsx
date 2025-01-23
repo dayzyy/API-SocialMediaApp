@@ -1,7 +1,6 @@
 export const format_time = date => {
   const current_date = new Date()
 
-
   const [year, month, day, hour, minute, second] = date.split(" ")
   const post_date = new Date(
     parseInt(year),

@@ -21,7 +21,7 @@ def get_chat(request, friend_id):
     messages = MessageSerializer(chat.messages.all(), many=True).data
     return Response(messages, status=200)
 
-@api_view(['GET'])
+@api_view(['PUT'])
 @permission_classes([IsAuthenticated])
 def mark_as_read(request, friend_id, msg_id):
     try:

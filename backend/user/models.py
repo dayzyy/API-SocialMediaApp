@@ -30,7 +30,7 @@ class User(PermissionsMixin, AbstractBaseUser):
     following = models.ManyToManyField('User', blank=True, related_name='follow_me')
     followers = models.ManyToManyField('User', blank=True, related_name='i_follow')
 
-    date_created = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
@@ -41,7 +41,7 @@ class User(PermissionsMixin, AbstractBaseUser):
     objects = UserManager()
 
     def __str__(self):
-        return self.email
+        return f"{self.email} {self.first_name}"
 
 class Post(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
