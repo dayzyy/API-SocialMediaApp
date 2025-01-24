@@ -1,5 +1,6 @@
 import Loading from "../components/Loading"
 import { useAuth } from "../context/AuthContext"
+import { useUserActions } from "../context/UserActionsContext"
 import { useNavigate } from "react-router-dom"
 
 import API_URL from "../settings"
@@ -8,7 +9,8 @@ import { format_time } from "../utils/dateUtils"
 import GoBackButton from "../components/GoHomeButton"
 
 export default function Directs(){
-  const { user } = useAuth()
+  const { user, setUser } = useAuth()
+  const { mark_message_as_read } = useUserActions()
   const navigate = useNavigate()
 
   if (!user) return <Loading/>
@@ -23,14 +25,38 @@ export default function Directs(){
     else return 0
   })
 
-  return(
+  const handle_click = async friend => {
+    navigate(`/chat/${friend.first_name}${friend.last_name}`, {state: {friend}})
+
+    if (user && friend.last_message?.sender && friend.last_message.sender ==  friend.email) {
+      const mark_read = async _ => {
+        await mark_message_as_read(friend.id , friend.last_message.id)
+      }
+
+      await mark_read()
+
+      setUser(prev => {
+        const updatedUser = {...prev}
+
+        updatedUser.following = updatedUser.following.map(f =>
+          f.id == friend.id ? {...f, last_message: {...f.last_message, is_read: true}} : f
+        )
+
+        return updatedUser
+      })
+    }
+  }
+
+  console.log(sorted_friends)
+
+  return (
     <main className="pt-36  flex flex-col gap-1  items-center justify-center">
       <GoBackButton addCss="self-start  ml-4"/>
       {user.following.length == 0 && <p className="text-gray-500 text-xl">You have no friends:(</p>}
       
       {sorted_friends.map(friend => {
         return(
-          <div onClick={_ => navigate(`/chat/${friend.first_name}${friend.last_name}`, {state: {friend}})} key={friend.id}
+          <div onClick={_ => handle_click(friend)} key={friend.id}
           className="px-4 w-screen h-20  border  flex items-center cursor-pointer  bg-gray-50">
 
             <div className="w-full  flex gap-4">
