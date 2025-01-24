@@ -4,6 +4,8 @@ import { useLocation, useNavigate } from "react-router-dom"
 import { useEffect, useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 
+import { format_time } from '../utils/dateUtils'
+
 import { BsSendFill } from "react-icons/bs";
 
 import Loading from '../components/Loading'
@@ -16,7 +18,7 @@ export default function Chat(){
   const {user, tokens} = useAuth()
 
   const [message, setMessage] = useState('')
-  const [messages, setMessages] = useState([])
+  const [messages, setMessages] = useState(null)
   const [socket, setSocket] = useState(null)
 
 
@@ -96,26 +98,29 @@ export default function Chat(){
       </div>
 
       <div id="chat" className="w-full  flex-1  flex flex-col gap-2  overflow-y-auto  p-4">
+        {!messages && <Loading addCss="self-center"/>}
         {messages && messages.map((msg, index) => {
           const acc = msg.sender == user.email ? user : friend
           const isLastMessage = index === messages.length - 1 || messages[index + 1]?.sender != msg.sender
 
           return (
+            <div key={msg.id} className={`flex items-center ${msg.sender == user.email ? 'flex-row-reverse' : ''}`}>
+              <div className={`w-full flex flex-col ${msg.sender == user.email ? 'items-end' : 'items-start'}`}>
+                <div className={`w-full flex ${msg.sender == user.email ? 'flex-row-reverse' : ''} items-end gap-1`}>
+                  {isLastMessage &&
+                    <img className="w-7 h-7  border rounded-3xl"
+                    src={acc.profile_picture != null ? `${API_URL}${acc.profile_picture}` : "https://cdn-icons-png.flaticon.com/512/2105/2105556.png"}/>
+                  }
+                  <p className={`w-fit overflow-y-auto maxWidthHalf break-words  p-2 rounded-md
+                  ${!isLastMessage && (msg.sender == user.email ? 'mr-8' : 'ml-8')}
+                  ${msg.sender == user.email ? 'border' : 'bg-blue-100'}`}>{msg.content}</p>
+                </div>
 
-            <div key={msg.id} className={`flex items-center gap-1 ${msg.sender == user.email ? 'flex-row-reverse' : ''}`}>
-              {
-                isLastMessage &&
-                <img className="w-7 h-7  border rounded-3xl"
-                src={acc.profile_picture != null ? `${API_URL}${acc.profile_picture}` : "https://cdn-icons-png.flaticon.com/512/2105/2105556.png"}/>
-              }
-
-              <p className={`w-fit overflow-y-auto maxWidthHalf break-words  p-2 rounded-md
-              ${!isLastMessage && (msg.sender == user.email ? 'mr-8' : 'ml-8')}
-              ${msg.sender == user.email ? 'border' : 'bg-blue-100'}`}>{msg.content}</p>
+                {msg == messages.at(-1) && <p className={`text-sm text-gray-400 ${msg.sender == user.email ? 'mr-8' : 'ml-8'}`}>{format_time(msg.created_at)}</p>}
+              </div>
             </div>
           )
         })}
-        {!messages && <Loading/>}
       </div>
 
       <div className="flex-none  flex  h-12 w-full  border">
