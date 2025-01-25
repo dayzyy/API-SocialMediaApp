@@ -116,6 +116,20 @@ def make_post(request):
 
     return Response(status=200)
 
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def delete_post(request, id):
+    try:
+        post = Post.objects.get(id=id)
+    except Post.DoesNotExist:
+        return Response({"error": "post not found"}, status=404)
+
+    if post.author != request.user:
+        return Response({"error": "not allowed to delete other's posts"}, status=403)
+
+    post.delete()
+    return Response({"detail": "post deleted"}, status=200)
+
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
 def like_post(request, id):
