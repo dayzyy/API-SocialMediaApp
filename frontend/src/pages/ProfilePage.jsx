@@ -44,7 +44,7 @@ export default function Profile(){
       <div className="w-full md:w-[750px]  flex flex-col gap-8">
         <GoBackButton addCss="self-start"/>
 
-        <ProfileBar profile={profile} big={true} show_follow_button={true}/>
+        <ProfileBar profile={profile} big={true} show_follow_button={profile.id == user.id ? false : true}/>
 
         <div className="w-full flex justify-around">
           <InfoButton text={`Posts ~${profile.posts.length}`} toggled={toggledOption === "posts"} on_click={_ => setToggledOption("posts")}/>

@@ -42,7 +42,14 @@ export default function Header(){
           <p className="text-3xl hover:text-gray-600">Rmedia</p>
         </div>
 
-        <div className="flex items-center">
+        <div className="flex items-center gap-2">
+          {user && 
+            <img className={`h-10 w-10  border rounded  cursor-pointer`}
+            src={user.profile_picture !== null ? `${API_URL}${user.profile_picture}` : "https://cdn-icons-png.flaticon.com/512/2105/2105556.png"}
+            onClick={_ => navigate(`/profile/${user.id}`)}
+            />
+          }
+
           {user && <AiOutlineMessage onClick={_ => navigate('/directs')} className={`${path_is('/directs') ? 'text-blue-500' :'text-blue-700'} hover:text-blue-500  text-3xl  cursor-pointer`}/>}
         </div>
       </div>
