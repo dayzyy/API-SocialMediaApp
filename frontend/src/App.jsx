@@ -14,6 +14,7 @@ import PostPage from './pages/PostPage'
 import AddPostPage from './pages/AddPostPage'
 
 import NotFoundPage from './pages/NotFoundPage'
+import SettingsPage from './pages/SettingsPage'
 
 export default function App(){
   return(
@@ -28,6 +29,7 @@ export default function App(){
       <Route path='/post/add' element={<AddPostPage/>}/>
       <Route path='/friends' element={<FriendsPage/>}/>
       <Route path='/notifications' element={<NotificationsPage/>}/>
+      <Route path='/settings' element={<SettingsPage/>}/>
       <Route path='*' element={<NotFoundPage/>} />
     </Routes>
   )

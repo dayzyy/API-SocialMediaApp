@@ -79,6 +79,20 @@ export function AuthProvider({children}){
     }
   }
 
+  const logout = _ => {
+    localStorage.removeItem('tokens')
+    setUser(null)
+    navigate('/login')
+
+    sl.fire({
+      text: "logged out",
+      icon: 'success',
+      position: 'top-end',
+      showConfirmButton: false,
+      timer: 1000,
+    })
+  }
+
   const register = async (email, password1, password2, firstName, lastName) => {
     if (!email || !password1 || !firstName || !lastName) {
       sl.fire({
@@ -181,7 +195,7 @@ export function AuthProvider({children}){
   }
 
   return (
-    <AuthContext.Provider value={{login, register, user, get_user, setUser, tokens}}>
+    <AuthContext.Provider value={{login, logout, register, user, get_user, setUser, tokens}}>
       {children}
     </AuthContext.Provider>
   )

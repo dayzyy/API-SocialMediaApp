@@ -63,7 +63,7 @@ export default function Header(){
               {notificationCount != 0 && <p className="absolute -top-2 right-0  text-sm text-red-600 font-bold">{notificationCount}</p>}
             </div>
           }
-          {user && <HiBars3 onClick={_ => navigate('/directs')} className={`${path_is('/settings') ? 'text-gray-400' :'text-gray-500'} hover:text-gray-400  text-4xl  cursor-pointer`}/>}
+          {user && <HiBars3 onClick={_ => navigate('/settings')} className={`${path_is('/settings') ? 'text-gray-400' :'text-gray-500'} hover:text-gray-400  text-4xl  cursor-pointer`}/>}
       </div>
     </header>
   )
