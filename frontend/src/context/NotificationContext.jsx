@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useAuth } from "./AuthContext";
+import { useLocation } from "react-router-dom";
 
 import API_URL from "../settings";
 
@@ -12,7 +13,12 @@ export function NotificationProvider({children}){
   const [notificationCount, setNotificationCount] = useState(0)
   const [liveNotifications, setLiveNotifications] = useState([])
   const { user, tokens } = useAuth()
+  const location = useLocation()
   const sl = Swal
+
+  useEffect(_ => {
+    console.log(liveNotifications)
+  }, [liveNotifications])
 
   useEffect(_ => {
     if (!user) return
@@ -41,15 +47,19 @@ export function NotificationProvider({children}){
     setSocket(ws)
 
     ws.onmessage = event => {
+      console.log('NOTIF RECIEVED')
       const notification = JSON.parse(event.data)
+      console.log(notification)
 
-      sl.fire({
-        text: notification.message,
-        icon: 'info',
-        position: 'top-end',
-        showConfirmButton: false,
-        timer: 2000,
-      })
+      if (location.pathname != `/chat/${notification.sender.first_name}${notification.sender.last_name}`) {
+        sl.fire({
+          text: notification.message,
+          icon: 'info',
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 1500,
+        })
+      }
 
       setLiveNotifications(prev => [...prev, notification])
       setNotificationCount(prev => prev + 1)

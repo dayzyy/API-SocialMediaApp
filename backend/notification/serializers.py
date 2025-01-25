@@ -1,17 +1,21 @@
 from rest_framework import serializers
 
+from chat.serializers import MessageSerializer
+
 from .models import PostNotification, LikeNotification, FollowNotification, CommentNotification
 from user.serializers import BaseUserSerializer, BasePostSerializer
+from chat.models import Message
 
 from common.utils import format_time
 
 class BaseNotificationSerializer(serializers.ModelSerializer):
     created_at = serializers.SerializerMethodField()
     category = serializers.SerializerMethodField()
+    message = serializers.SerializerMethodField()
 
     class Meta:
         absrtact = True
-        fields = ['id', 'created_at', 'category']
+        fields = ['id', 'created_at', 'category', 'message']
     
     def get_created_at(self, obj):
         return format_time(obj)
@@ -26,11 +30,10 @@ class BaseNotificationSerializer(serializers.ModelSerializer):
 class PostNotificationSerializer(BaseNotificationSerializer):
     about = BasePostSerializer()
     friend = serializers.SerializerMethodField()
-    message = serializers.SerializerMethodField()
 
     class Meta:
         model = PostNotification
-        fields = BaseNotificationSerializer.Meta.fields + ['friend', 'about', 'message']
+        fields = BaseNotificationSerializer.Meta.fields + ['friend', 'about']
 
     def get_friend(self, obj):
         return BaseUserSerializer(obj.about.author).data
@@ -44,11 +47,10 @@ class PostNotificationSerializer(BaseNotificationSerializer):
 class LikeNotificationSerializer(BaseNotificationSerializer):
     friend = BaseUserSerializer()
     about = BasePostSerializer()
-    message = serializers.SerializerMethodField()
 
     class Meta:
         model = LikeNotification
-        fields = BaseNotificationSerializer.Meta.fields + ['friend', 'about', 'message']
+        fields = BaseNotificationSerializer.Meta.fields + ['friend', 'about']
 
     def get_category(self, obj):
         return "like"
@@ -65,14 +67,30 @@ class CommentNotificationSerializer(LikeNotificationSerializer):
 
 class FollowNotificationSerializer(BaseNotificationSerializer):
     friend = BaseUserSerializer()
-    message = serializers.SerializerMethodField()
 
     class Meta:
         model = FollowNotification
-        fields = BaseNotificationSerializer.Meta.fields + ['friend', 'message']
+        fields = BaseNotificationSerializer.Meta.fields + ['friend']
 
     def get_category(self, obj):
         return "follow"
 
     def get_message(self, obj):
         return f"{obj.friend.first_name} {obj.friend.last_name} started following you"
+
+class MessageNotificationSerializer(BaseNotificationSerializer):
+    sender = BaseUserSerializer()
+    content = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Message
+        fields = BaseNotificationSerializer.Meta.fields + ['sender', 'content']
+
+    def get_content(self, obj):
+        return MessageSerializer(obj).data
+
+    def get_category(self, obj):
+        return "message"
+
+    def get_message(self, obj):
+        return f"{obj.sender.first_name} {obj.sender.last_name} sent you a message"

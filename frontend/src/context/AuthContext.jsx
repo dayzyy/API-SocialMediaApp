@@ -143,8 +143,6 @@ export function AuthProvider({children}){
   const get_user = async _ => {
     if (!tokens) return
 
-    console.log('Getting user...')
-
     const response = await fetch(`${API_URL}/user/get/`, {
       method: 'GET',
       headers: {
@@ -155,7 +153,6 @@ export function AuthProvider({children}){
 
     if (response.status == 200) {
       const data = await response.json()
-      console.log('User -> ' + data)
       setUser(data)
     }
     else{

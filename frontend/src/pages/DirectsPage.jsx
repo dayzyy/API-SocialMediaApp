@@ -1,7 +1,9 @@
 import Loading from "../components/Loading"
 import { useAuth } from "../context/AuthContext"
 import { useUserActions } from "../context/UserActionsContext"
-import { useNavigate } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
+import { useNotifications } from "../context/NotificationContext"
+import { useEffect } from "react"
 
 import API_URL from "../settings"
 import { format_time } from "../utils/dateUtils"
@@ -9,9 +11,27 @@ import { format_time } from "../utils/dateUtils"
 import GoBackButton from "../components/GoHomeButton"
 
 export default function Directs(){
-  const { user, setUser } = useAuth()
+  const { user, setUser} = useAuth()
   const { mark_message_as_read } = useUserActions()
+  const { liveNotifications } = useNotifications()
   const navigate = useNavigate()
+
+  useEffect(_ => {
+    if (liveNotifications.length != 0 && liveNotifications.at(-1).category == "message") {
+      setUser(prev => {
+        const updatedUser = {...prev}
+
+        updatedUser.following = updatedUser.following.map(f => {
+          if (liveNotifications.at(-1).sender.id == f.id) {
+            return {...f, last_message: liveNotifications.at(-1).content}
+          }
+          else return {...f}
+        })
+
+        return updatedUser
+      })
+    }
+  }, [liveNotifications])
 
   if (!user) return <Loading/>
 
@@ -26,28 +46,27 @@ export default function Directs(){
   })
 
   const handle_click = async friend => {
-    navigate(`/chat/${friend.first_name}${friend.last_name}`, {state: {friend}})
+    navigate(`/chat/${friend.first_name}${friend.last_name}`, {state: {friend: friend}})
 
-    if (user && friend.last_message?.sender && friend.last_message.sender ==  friend.email) {
-      const mark_read = async _ => {
-        await mark_message_as_read(friend.id , friend.last_message.id)
-      }
-
-      await mark_read()
+    if (user && friend.last_message?.sender === friend.email && !friend.last_message.is_read) {
+      await mark_message_as_read(friend.id, friend.last_message.id)
 
       setUser(prev => {
-        const updatedUser = {...prev}
+        let updated_user = {...prev}
 
-        updatedUser.following = updatedUser.following.map(f =>
-          f.id == friend.id ? {...f, last_message: {...f.last_message, is_read: true}} : f
-        )
+        updated_user.following = updated_user.following.map(f => {
+          if (f.id == friend.id) {
+            return {...f, last_message: {...f.last_message, is_read: true}}
+          }
+          else {
+            return f
+          }
+        })
 
-        return updatedUser
+        return updated_user
       })
     }
   }
-
-  console.log(sorted_friends)
 
   return (
     <main className="pt-36  flex flex-col gap-1  items-center justify-center">
@@ -56,7 +75,7 @@ export default function Directs(){
       
       {sorted_friends.map(friend => {
         return(
-          <div onClick={_ => handle_click(friend)} key={friend.id}
+          <div onClick={_ => handle_click(friend)}  key={friend.id}
           className="px-4 w-screen h-20  border  flex items-center cursor-pointer  bg-gray-50">
 
             <div className="w-full  flex gap-4">

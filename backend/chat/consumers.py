@@ -6,6 +6,7 @@ from chat.models import Chat, Message
 from chat.serializers import MessageSerializer
 
 from notification.views import notify_user
+from notification.serializers import MessageNotificationSerializer
 
 import json
 import jwt
@@ -118,5 +119,5 @@ class ChatConsumer(AsyncWebsocketConsumer):
     def create_message(self, chat, message):
         message = Message.objects.create(chat=chat, content=message, sender=self.user)
         if message:
-            notify_user(self.friend, {"message": f"{self.friend.first_name} {self.friend.last_name} sent you a message"})
+            notify_user(self.friend, MessageNotificationSerializer(message).data)
             return message

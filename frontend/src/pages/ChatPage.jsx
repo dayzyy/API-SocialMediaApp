@@ -72,7 +72,7 @@ export default function Chat(){
   useEffect(_ => {
     const chat = document.getElementById("chat")
     chat.scrollTop = chat.scrollHeight
-  }, [])
+  }, [messages])
 
   const send_message = _ => {
     if (socket && message) {
@@ -97,7 +97,7 @@ export default function Chat(){
         </div>
       </div>
 
-      <div id="chat" className="w-full  flex-1  flex flex-col gap-2  overflow-y-auto  p-4">
+      <div id="chat" className="w-full  flex-1  flex flex-col  overflow-y-auto gap-1 p-4">
         {!messages && <Loading addCss="self-center"/>}
         {messages && messages.map((msg, index) => {
           const acc = msg.sender == user.email ? user : friend
