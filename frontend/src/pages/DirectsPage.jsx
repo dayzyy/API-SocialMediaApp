@@ -1,9 +1,7 @@
 import Loading from "../components/Loading"
 import { useAuth } from "../context/AuthContext"
 import { useUserActions } from "../context/UserActionsContext"
-import { useLocation, useNavigate } from "react-router-dom"
-import { useNotifications } from "../context/NotificationContext"
-import { useEffect } from "react"
+import { useNavigate } from "react-router-dom"
 
 import API_URL from "../settings"
 import { format_time } from "../utils/dateUtils"
@@ -11,27 +9,10 @@ import { format_time } from "../utils/dateUtils"
 import GoBackButton from "../components/GoHomeButton"
 
 export default function Directs(){
-  const { user, setUser} = useAuth()
+  const { user} = useAuth()
   const { mark_message_as_read } = useUserActions()
-  const { liveNotifications } = useNotifications()
   const navigate = useNavigate()
 
-  useEffect(_ => {
-    if (liveNotifications.length != 0 && liveNotifications.at(-1).category == "message") {
-      setUser(prev => {
-        const updatedUser = {...prev}
-
-        updatedUser.following = updatedUser.following.map(f => {
-          if (liveNotifications.at(-1).sender.id == f.id) {
-            return {...f, last_message: liveNotifications.at(-1).content}
-          }
-          else return {...f}
-        })
-
-        return updatedUser
-      })
-    }
-  }, [liveNotifications])
 
   if (!user) return <Loading/>
 
@@ -49,22 +30,7 @@ export default function Directs(){
     navigate(`/chat/${friend.first_name}${friend.last_name}`, {state: {friend: friend}})
 
     if (user && friend.last_message?.sender === friend.email && !friend.last_message.is_read) {
-      await mark_message_as_read(friend.id, friend.last_message.id)
-
-      setUser(prev => {
-        let updated_user = {...prev}
-
-        updated_user.following = updated_user.following.map(f => {
-          if (f.id == friend.id) {
-            return {...f, last_message: {...f.last_message, is_read: true}}
-          }
-          else {
-            return f
-          }
-        })
-
-        return updated_user
-      })
+      await mark_message_as_read(friend)
     }
   }
 

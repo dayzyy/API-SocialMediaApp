@@ -12,7 +12,7 @@ export function NotificationProvider({children}){
   const [socket, setSocket] = useState(null)
   const [notificationCount, setNotificationCount] = useState(0)
   const [liveNotifications, setLiveNotifications] = useState([])
-  const { user, tokens } = useAuth()
+  const { user, tokens, setUser } = useAuth()
   const location = useLocation()
   const sl = Swal
 
@@ -39,6 +39,23 @@ export function NotificationProvider({children}){
     }
     get_new_notifications_count()
   }, [user])
+
+  useEffect(_ => {
+    if (liveNotifications.length != 0 && liveNotifications.at(-1).category == "message") {
+      setUser(prev => {
+        const updatedUser = {...prev}
+
+        updatedUser.following = updatedUser.following.map(f => {
+          if (liveNotifications.at(-1).sender.id == f.id) {
+            return {...f, last_message: liveNotifications.at(-1).content}
+          }
+          else return {...f}
+        })
+
+        return updatedUser
+      })
+    }
+  }, [liveNotifications])
 
   useEffect(_ => {
     if (!user) return

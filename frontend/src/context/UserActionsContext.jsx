@@ -7,7 +7,7 @@ import Swal from "sweetalert2";
 const UserActionsContext = createContext()
 
 export function UserActionsProvider({children}){
-  const { user, tokens, get_user } = useAuth()
+  const { user, tokens, get_user, setUser } = useAuth()
   const sl = Swal
 
   const follow = async id => {
@@ -180,13 +180,28 @@ export function UserActionsProvider({children}){
     }
   }
 
-  const mark_message_as_read = async (friend_id, message_id) => {
-    await fetch(`${API_URL}/chat/${friend_id}/${message_id}/`,  {
+  const mark_message_as_read = async (friend) => {
+    await fetch(`${API_URL}/chat/${friend.id}/${friend.last_message.id}/`,  {
       method: 'PUT',
       headers: {
         'Content-type': 'application/json',
         'Authorization': `Bearer ${tokens.access}`
       }
+    })
+
+    setUser(prev => {
+      let updated_user = {...prev}
+
+      updated_user.following = updated_user.following.map(f => {
+        if (f.id == friend.id) {
+          return {...f, last_message: {...f.last_message, is_read: true}}
+        }
+        else {
+          return f
+        }
+      })
+
+      return updated_user
     })
   }
 

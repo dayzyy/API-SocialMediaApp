@@ -76,7 +76,7 @@ export default function PostPage(){
           </div>
         </div>
 
-        <div className="pt-10 px-4">
+        <div className="py-10 px-4">
           {
             post.comments.length === 0 && <p className="text-gray-500 text-xl">No comments</p>
           }
