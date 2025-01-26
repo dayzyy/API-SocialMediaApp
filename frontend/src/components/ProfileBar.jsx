@@ -2,11 +2,9 @@ import { useNavigate } from "react-router-dom"
 
 import { format_time } from "../utils/dateUtils"
 
-import ToggleFollowButton from "./ToggleFollowButton"
-
 import API_URL from "../settings"
 
-export default function ProfileBar({profile, timestamp, icon, message, link, small, big, show_follow_button, hover_color}){
+export default function ProfileBar({profile, timestamp, icon, message, link, small, big, button, hover_color}){
   const navigate = useNavigate()
 
   let picture_size = 'w-12 h-12'
@@ -52,7 +50,7 @@ export default function ProfileBar({profile, timestamp, icon, message, link, sma
         </div>
       </div>
 
-      {show_follow_button && <ToggleFollowButton profile={profile} small={small} big={big}/>}
+      {button}
     </div>
   )
 }

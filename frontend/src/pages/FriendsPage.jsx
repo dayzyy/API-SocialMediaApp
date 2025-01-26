@@ -8,6 +8,8 @@ import GoBackButton from "../components/GoHomeButton"
 import InfoButton from "../components/InfoButton"
 import ProfileBar from "../components/ProfileBar"
 
+import ToggleFollowButton from "../components/ToggleFollowButton"
+
 export default function Friends(){
   const [email, setEmail] = useState('')
   const [searchedUser, setSearchedUser] = useState(null)
@@ -43,7 +45,7 @@ export default function Friends(){
           {searchedUser && (searchedUser.id === -1121 ?
             <p className="text-gray-500">user not found!</p>
             :
-            <ProfileBar profile={searchedUser} link={`/profile/${searchedUser.id}`} small={true} hover_color={'gray-50'} show_follow_button={true}/>)
+            <ProfileBar profile={searchedUser} link={`/profile/${searchedUser.id}`} small={true} hover_color={'gray-50'} button={<ToggleFollowButton profile={searchedUser} small={true}/>}/>)
           }
         </div>
 
@@ -62,7 +64,7 @@ export default function Friends(){
             )}
 
             {
-              accounts.map(friend => <ProfileBar key={friend.id} profile={friend} link={`/profile/${friend.id}`} hover_color={'gray-50'} show_follow_button={true}/>)
+              accounts.map(friend => <ProfileBar key={friend.id} profile={friend} link={`/profile/${friend.id}`} hover_color={'gray-50'} button={<ToggleFollowButton profile={friend}/>}/>)
             }
           </div>
         </div>

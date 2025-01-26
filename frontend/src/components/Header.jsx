@@ -37,7 +37,6 @@ export default function Header(){
     let count = 0
     
     user.following.forEach(friend => {
-      console.log(friend)
       if (friend.last_message.sender && friend.last_message.is_read == false) count += 1
     })
 

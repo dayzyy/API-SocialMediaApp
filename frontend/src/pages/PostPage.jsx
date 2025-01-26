@@ -1,10 +1,12 @@
 import { useParams } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import { useUserActions } from "../context/UserActionsContext";
 import { useEffect, useState } from "react";
 
 import GoBackButton from "../components/GoHomeButton";
 import LikeButton from "../components/LikeButton";
 import CommentButton from "../components/CommentButton";
+import MoreOptionsButton from "../components/MoreOptionsButton"
 
 import ProfileBar from "../components/ProfileBar";
 
@@ -16,6 +18,7 @@ import Swal from "sweetalert2";
 
 export default function PostPage(){
   const { id } = useParams()
+  const { user } = useAuth()
   const { get_post, comment } = useUserActions()
   const [post, setPost] = useState(null)
   const [message, setMessage] = useState('')
@@ -48,7 +51,15 @@ export default function PostPage(){
     if (status == 200) setMessage('')
   }
 
-  if (!post) return <main className="pt-36 flex justify-center"><Loading/></main>
+  const handle_delete = _ => {
+    console.log('deleting')
+  }
+
+  const handle_report = _ => {
+    console.log('reporting')
+  }
+
+  if (!post || !user) return <main className="pt-36 flex justify-center"><Loading/></main>
 
   return (
     <main className="w-screen pt-36  px-4  flex flex-col items-center">
@@ -56,7 +67,9 @@ export default function PostPage(){
         <GoBackButton/>
 
         <div className="flex flex-col gap-4">
-          <ProfileBar profile={post.author} timestamp={post.created_at} link={`/profile/${post.author.id}`} big={true} hover_color={'gray-50'}/>
+          <ProfileBar profile={post.author} timestamp={post.created_at} link={`/profile/${post.author.id}`} big={true} hover_color={'gray-50'}
+            button={post.author.id == user.id ? <MoreOptionsButton options={[{text: 'delete', click: handle_delete}, {text: 'report', click: handle_report}]} big={true}/> : null}
+          />
 
           <div className="px-4  flex flex-col gap-3">
             <p className="text-gray-700 text-xl">{post.content}</p>

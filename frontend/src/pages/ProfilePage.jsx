@@ -9,6 +9,7 @@ import InfoButton from "../components/InfoButton";
 import Post from "../components/Post";
 import ProfileBar from "../components/ProfileBar";
 
+import ToggleFollowButton from "../components/ToggleFollowButton";
 
 export default function Profile(){
   const { id } = useParams()
@@ -44,7 +45,7 @@ export default function Profile(){
       <div className="w-full md:w-[750px]  flex flex-col gap-8">
         <GoBackButton addCss="self-start"/>
 
-        <ProfileBar profile={profile} big={true} show_follow_button={profile.id == user.id ? false : true}/>
+        <ProfileBar profile={profile} big={true} button={profile.id == user.id ? null : <ToggleFollowButton profile={profile} big={true}/>}/>
 
         <div className="w-full flex justify-around">
           <InfoButton text={`Posts ~${profile.posts.length}`} toggled={toggledOption === "posts"} on_click={_ => setToggledOption("posts")}/>
@@ -58,11 +59,11 @@ export default function Profile(){
           }
 
           {toggledOption === "following" &&
-            profile.following.map(friend => <ProfileBar key={friend.id} profile={friend} link={`/profile/${friend.id}`} hover_color={'gray-50'} show_follow_button={true}/>)
+            profile.following.map(friend => <ProfileBar key={friend.id} profile={friend} link={`/profile/${friend.id}`} hover_color={'gray-50'} button={<ToggleFollowButton profile={friend}/>}/>)
           }
 
           {toggledOption === "followers" &&
-            profile.followers.map(friend => <ProfileBar key={friend.id} profile={friend} link={`/profile/${friend.id}`} hover_color={'gray-50'} show_follow_button={true}/>)
+            profile.followers.map(friend => <ProfileBar key={friend.id} profile={friend} link={`/profile/${friend.id}`} hover_color={'gray-50'} button={<ToggleFollowButton profile={friend}/>}/>)
           }
         </div>
       </div>
