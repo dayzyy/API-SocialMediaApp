@@ -180,8 +180,8 @@ export function UserActionsProvider({children}){
     }
   }
 
-  const mark_message_as_read = async (friend) => {
-    await fetch(`${API_URL}/chat/${friend.id}/${friend.last_message.id}/`,  {
+  const mark_message_as_read = async (friend, message_id) => {
+    await fetch(`${API_URL}/chat/${friend.id}/${message_id}/`,  {
       method: 'PUT',
       headers: {
         'Content-type': 'application/json',

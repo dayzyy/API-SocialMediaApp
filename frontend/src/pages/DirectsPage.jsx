@@ -30,7 +30,7 @@ export default function Directs(){
     navigate(`/chat/${friend.first_name}${friend.last_name}`, {state: {friend: friend}})
 
     if (user && friend.last_message?.sender === friend.email && !friend.last_message.is_read) {
-      await mark_message_as_read(friend)
+      await mark_message_as_read(friend, friend.last_message.id)
     }
   }
 
