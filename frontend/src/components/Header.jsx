@@ -60,7 +60,7 @@ export default function Header(){
           {user && 
             <div className="relative">
               <GoBell onClick={_ => navigate('/notifications')} className={`${path_is('/notifications') ? 'text-gray-400' :'text-gray-500'} hover:text-gray-400  text-3xl  cursor-pointer`}/>
-              {notificationCount != 0 && <p className="absolute -top-2 right-0  text-sm text-red-600 font-bold">{notificationCount}</p>}
+              {notificationCount > 0 && <p className="absolute -top-2 right-0  text-sm text-red-600 font-bold">{notificationCount}</p>}
             </div>
           }
           {user && <HiBars3 onClick={_ => navigate('/settings')} className={`${path_is('/settings') ? 'text-gray-400' :'text-gray-500'} hover:text-gray-400  text-4xl  cursor-pointer`}/>}

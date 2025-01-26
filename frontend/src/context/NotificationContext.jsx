@@ -18,24 +18,29 @@ export function NotificationProvider({children}){
   const location = useLocation()
   const sl = Swal
 
+  const get_new_notifications_count = async _ => {
+    const response = await fetch(`${API_URL}/notification/new/`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${tokens.access}`
+      }
+    })
+
+    if (response.status == 200) {
+      const data = await response.json()
+      setNotificationCount(data.count)
+    }
+  }
+
   useEffect(_ => {
     if (!user) return
 
-    const get_new_notifications_count = async _ => {
-      const response = await fetch(`${API_URL}/notification/new/`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${tokens.access}`
-        }
-      })
-
-      if (response.status == 200) {
-        const data = await response.json()
-        setNotificationCount(data.count)
-      }
+    const fetch_new_notifications_count = async _ => {
+      await get_new_notifications_count()
     }
-    get_new_notifications_count()
+    
+    fetch_new_notifications_count()
   }, [user])
 
   useEffect(_ => {
@@ -108,7 +113,7 @@ export function NotificationProvider({children}){
   }
 
   return(
-    <NotificationContext.Provider value={{notificationCount, liveNotifications, get_notifications}}>
+    <NotificationContext.Provider value={{notificationCount, setNotificationCount, liveNotifications, get_notifications, get_new_notifications_count}}>
       {children}
     </NotificationContext.Provider>
   )
