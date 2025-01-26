@@ -89,7 +89,7 @@ export default function Notifications(){
           all_notifications.map(notification => {
             return (
               <div key={notification.id}
-                className={`px-4 w-screen h-20  border  flex items-center cursor-pointer ${notification.is_read ? 'bg-gray-50' : 'bg-gray-100'} hover:bg-gray-200`}
+                className={`px-4 w-screen h-20  border  flex items-center cursor-pointer ${notification.is_read ? 'bg-gray-50' : 'bg-green-100'} hover:bg-gray-200`}
                 onClick={_ => handle_click(notification)}
               >
                 <ProfileBar profile={notification.friend} timestamp={notification.created_at} icon={get_icon(notification.category)} message={notification.message}/>

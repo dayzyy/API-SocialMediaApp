@@ -14,6 +14,7 @@ import { useEffect, useRef, useState } from "react";
 export default function Header(){
   const { user } = useAuth()
   const { notificationCount } = useNotifications()
+  const [messageCounter, setMessageCounter] = useState(0)
   const navigate = useNavigate()
   const location = useLocation()
   const [isShown, setIsShown] = useState(true)
@@ -29,6 +30,19 @@ export default function Header(){
     document.addEventListener('scroll', handle_scroll)
     return _ => document.removeEventListener('scroll', handle_scroll)
   }, [])
+
+  useEffect(_ => {
+    if (!user) return
+
+    let count = 0
+    
+    user.following.forEach(friend => {
+      console.log(friend)
+      if (friend.last_message.sender && friend.last_message.is_read == false) count += 1
+    })
+
+    setMessageCounter(count)
+  }, [user])
 
   const path_is = target_path => {
     return location.pathname === target_path
@@ -50,7 +64,12 @@ export default function Header(){
             />
           }
 
-          {user && <AiOutlineMessage onClick={_ => navigate('/directs')} className={`${path_is('/directs') ? 'text-blue-500' :'text-blue-700'} hover:text-blue-500  text-3xl  cursor-pointer`}/>}
+          {user && 
+            <div className="relative">
+              <AiOutlineMessage onClick={_ => navigate('/directs')} className={`${path_is('/directs') ? 'text-blue-500' :'text-blue-700'} hover:text-blue-500  text-3xl  cursor-pointer`}/>
+              {messageCounter > 0 && <p className="absolute -top-2 right-0  text-sm text-red-600 font-bold">{messageCounter}</p>}
+            </div>
+          }
         </div>
       </div>
 
