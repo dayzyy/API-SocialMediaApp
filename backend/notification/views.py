@@ -78,20 +78,24 @@ def mark_as_read(request, id):
 
     model = notification_models.get(category)
     if not model:
-        return Response(400)
+        return Response({"error": "unknow notification category"}, status=400)
 
     try:
         notification = model.objects.get(id=id)
     except model.DoesNotExist:
-        return Response(status=404)
+        return Response({"error": "notification not found"}, status=404)
 
     if model == PostNotification:
         if not notification.recipients.filter(id=request.user.id):
-            return Response(status=400)
+            return Response({"error": "not permitted"}, status=402)
         else:
             notification.is_read = True
             notification.save()
-            return Response(status=200)
+            return Response({"success": "notification marked as read"}, status=200)
     else:
-        if not notification.recipient == request.user:
-            return Response(status=400)
+        if notification.recipient == request.user:
+            notification.is_read = True
+            notification.save()
+            return Response({"success": "notification marked as read"}, status=200)
+        else:
+            return Response({"error": "not permitted"}, status=402)

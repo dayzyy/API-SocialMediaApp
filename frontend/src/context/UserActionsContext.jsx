@@ -7,7 +7,7 @@ import Swal from "sweetalert2";
 const UserActionsContext = createContext()
 
 export function UserActionsProvider({children}){
-  const { user, tokens, get_user, setUser } = useAuth()
+  const { user, tokens, setUser, get_user } = useAuth()
   const sl = Swal
 
   const follow = async id => {
@@ -35,7 +35,13 @@ export function UserActionsProvider({children}){
       }
     })
 
-    get_user()
+    setUser(prev => {
+      let updated_user = {...prev}
+
+      updated_user.following = updated_user.following.filter(friend => friend.id != id)
+
+      return updated_user
+    })
   }
 
   const like = async id => {
@@ -205,8 +211,15 @@ export function UserActionsProvider({children}){
     })
   }
 
-  const mark_notification_as_read = _ => {
-
+  const mark_notification_as_read = async notification => {
+    await fetch(`${API_URL}/notification/${notification.id}/seen/`, {
+      method: 'PUT',
+      headers: {
+        'Content-type': 'application/json',
+        'Authorization': `Bearer ${tokens.access}`
+      },
+      body: JSON.stringify({"category": notification.category})
+    })
   }
 
   return (

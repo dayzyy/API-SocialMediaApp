@@ -15,7 +15,7 @@ class BaseNotificationSerializer(serializers.ModelSerializer):
 
     class Meta:
         absrtact = True
-        fields = ['id', 'created_at', 'category', 'message']
+        fields = ['id', 'created_at', 'category', 'message', 'is_read']
     
     def get_created_at(self, obj):
         return format_time(obj)
