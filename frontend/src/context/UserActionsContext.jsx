@@ -1,5 +1,6 @@
 import { createContext, useContext } from "react";
 import { useAuth } from "./AuthContext";
+import { useNavigate } from "react-router-dom";
 
 import API_URL from "../settings";
 import Swal from "sweetalert2";
@@ -8,6 +9,7 @@ const UserActionsContext = createContext()
 
 export function UserActionsProvider({children}){
   const { user, tokens, setUser, get_user } = useAuth()
+  const navigate = useNavigate()
   const sl = Swal
 
   const follow = async id => {
@@ -162,6 +164,41 @@ export function UserActionsProvider({children}){
     }
   }
 
+  const delete_post = async id => {
+    const response = await fetch(`${API_URL}/post/delete/${id}/`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'applicaton/json',
+        'Authorization': `Bearer ${tokens.access}`
+      }
+    })
+
+    if (response.status == 200) {
+      sl.fire({
+        text: "post deleted!",
+        icon: 'success',
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 1000,
+      })
+
+      navigate('/home')
+
+      setUser(prev => {
+        updated_user = {...prev}
+
+        updated_user.posts = updated_user.posts.filter(post => post.id != id)
+
+        return updated_user
+      })
+    }
+
+    if (response.status == 404) {
+      const error = await response.json()
+      console.log(error)
+    }
+  }
+
   const comment = async (text, id) => {
     if (!tokens) return
 
@@ -223,7 +260,7 @@ export function UserActionsProvider({children}){
   }
 
   return (
-    <UserActionsContext.Provider value={{follow, unfollow, like, unlike, get_post, get_profile, make_post, comment, mark_message_as_read, mark_notification_as_read}}>
+    <UserActionsContext.Provider value={{follow, unfollow, like, unlike, get_post, delete_post, get_profile, make_post, comment, mark_message_as_read, mark_notification_as_read}}>
       {children}
     </UserActionsContext.Provider>
   )

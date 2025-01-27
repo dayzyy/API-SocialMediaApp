@@ -19,7 +19,7 @@ import Swal from "sweetalert2";
 export default function PostPage(){
   const { id } = useParams()
   const { user } = useAuth()
-  const { get_post, comment } = useUserActions()
+  const { get_post, comment, delete_post } = useUserActions()
   const [post, setPost] = useState(null)
   const [message, setMessage] = useState('')
   const sl = Swal
@@ -51,8 +51,9 @@ export default function PostPage(){
     if (status == 200) setMessage('')
   }
 
-  const handle_delete = _ => {
+  const handle_delete = id => {
     console.log('deleting')
+    delete_post(id)
   }
 
   const handle_report = _ => {
@@ -68,7 +69,12 @@ export default function PostPage(){
 
         <div className="flex flex-col gap-4">
           <ProfileBar profile={post.author} timestamp={post.created_at} link={`/profile/${post.author.id}`} big={true} hover_color={'gray-50'}
-            button={post.author.id == user.id ? <MoreOptionsButton options={[{text: 'delete', click: handle_delete}, {text: 'report', click: handle_report}]} big={true}/> : null}
+            button={post.author.id == user.id ?
+              <MoreOptionsButton options={[
+                {text: 'delete', confirmation: "do you want to delete  this post?", click: _ => handle_delete(post.id)},
+                {text: 'report', confirmation: "do you want to report this post?", click: handle_report}
+              ]} big={true}/>
+              : null}
           />
 
           <div className="px-4  flex flex-col gap-3">
