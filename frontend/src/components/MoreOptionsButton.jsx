@@ -27,11 +27,11 @@ export default function MoreOptionsButton({options, big}){
 
   return (
     <div className="relative flex gap-1">
-      <div className={`${!isToggled ? 'hidden h-0' : 'h-fit'} ${big ? 'right-10' : 'right-2'} absolute border rounded  p-1 bg-white z-20`}>
+      <div className={`${!isToggled ? 'hidden h-0' : 'h-fit'} right-10 absolute border rounded  p-1 bg-white z-20`}>
         {options.map(option => <p key={option.text} className="text-gray-700 hover:bg-gray-100 p-2" onClick={e => get_handler(e, option.confirmation, option.click)}>{option.text}</p>)}
       </div>
 
-      <CiCircleMore className={`text-gray-600 hover:text-gray-800 ${big && 'text-4xl'}`}
+      <CiCircleMore className={`text-gray-600 hover:text-gray-800 ${big ? 'text-4xl' : 'text-2xl'}`}
         onClick={e => toggle(e)}
       />
     </div>

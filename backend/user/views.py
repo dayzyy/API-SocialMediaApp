@@ -128,7 +128,7 @@ def delete_post(request, id):
         return Response({"error": "not permitted"}, status=403)
 
     post.delete()
-    return Response({"detail": "post deleted"}, status=200)
+    return Response({"success": "post deleted"}, status=200)
 
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
@@ -136,7 +136,7 @@ def like_post(request, id):
     try:
         post = Post.objects.get(id=id)
         if post.likes.filter(id=request.user.id).exists():
-            return Response({"detail": "already liked"}, status=400)
+            return Response({"success": "already liked"}, status=400)
 
     except Post.DoesNotExist:
         return Response(status=404)
@@ -187,3 +187,17 @@ def make_comment(request, post_id):
     notify_user(post.author, CommentNotificationSerializer(notification).data)
 
     return Response(status=200)
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def delete_comment(request, id):
+    try:
+        comment = Comment.objects.get(id=id)
+    except Comment.DoesNotExist:
+        return Response({"error": "comment not found"}, status=404)
+
+    if comment.author.id != request.user.id:
+        return Response({"error": "not permitted"}, status=403)
+
+    comment.delete()
+    return Response({"success": "comment deleted!"}, status=200)

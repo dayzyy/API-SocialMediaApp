@@ -19,17 +19,17 @@ import Swal from "sweetalert2";
 export default function PostPage(){
   const { id } = useParams()
   const { user } = useAuth()
-  const { get_post, comment, delete_post } = useUserActions()
+  const { get_post, comment, delete_post, delete_comment } = useUserActions()
   const [post, setPost] = useState(null)
   const [message, setMessage] = useState('')
   const sl = Swal
 
+  const fetch_post = async _ => {
+    const post = await get_post(id)
+    setPost(post)
+  }
+
   useEffect(_ => {
-    const fetch_post = async _ => {
-      const post = await get_post(id)
-      setPost(post)
-    }
-    
     fetch_post()
   }, [id])
 
@@ -51,13 +51,35 @@ export default function PostPage(){
     if (status == 200) setMessage('')
   }
 
-  const handle_delete = id => {
-    console.log('deleting')
-    delete_post(id)
+  const handle_comment_delete = async id => {
+    const success = await delete_comment(id)
+    if (success) {
+      setPost(prev => {
+        const updated_post = {...prev}
+
+        updated_post.comments = updated_post.comments.filter(comment => comment.id != id)
+
+        return updated_post
+      })
+    }
+    else {
+      sl.fire({
+        text: "something went wrong",
+        icon: 'error',
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 1000,
+      })
+    }
   }
 
-  const handle_report = _ => {
-    console.log('reporting')
+  const get_option = comment => {
+    const option = (
+    comment.author.id == user.id
+      ? [{text: "delete", confirmation: "do you want to delete this comment?", click: _ => handle_comment_delete(comment.id)}]
+      : [{text: "report", confirmation: "do you want to report this comment?", click: _ => console.log('feature in production')}]
+    )
+    return option
   }
 
   if (!post || !user) return <main className="pt-36 flex justify-center"><Loading/></main>
@@ -80,8 +102,8 @@ export default function PostPage(){
           <ProfileBar profile={post.author} timestamp={post.created_at} link={`/profile/${post.author.id}`} big={true} hover_color={'gray-50'}
             button={post.author.id == user.id ?
               <MoreOptionsButton options={[
-                {text: 'delete', confirmation: "do you want to delete  this post?", click: _ => handle_delete(post.id)},
-                {text: 'report', confirmation: "do you want to report this post?", click: handle_report}
+                {text: 'delete', confirmation: "do you want to delete  this post?", click: _ => delete_post(post.id)},
+                {text: 'report', confirmation: "do you want to report this post?", click: _ => console.log('feature in production')}
               ]} big={true}/>
               : null}
           />
@@ -114,7 +136,10 @@ export default function PostPage(){
                 {sorted_comments.map(comment => {
                   return (
                     <div key={comment.id} className="div">
-                      <ProfileBar key={comment.id} profile={comment.author} link={`/profile/${comment.author.id}`} timestamp={comment.created_at} small={true} hover_color={'gray-50'}/>
+                      <ProfileBar
+                        key={comment.id} profile={comment.author} link={`/profile/${comment.author.id}`} timestamp={comment.created_at} small={true} hover_color={'gray-50'}
+                        button={<MoreOptionsButton options={get_option(comment)}/>}
+                      />
                       <p className="text-gray-700 px-4">{comment.content}</p>
                     </div>
                   )

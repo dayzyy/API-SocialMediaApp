@@ -199,6 +199,32 @@ export function UserActionsProvider({children}){
     }
   }
 
+  const delete_comment = async id => {
+    const response = await fetch(`${API_URL}/user/post/comment/${id}/delete/`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'applicaton/json',
+        'Authorization': `Bearer ${tokens.access}`
+      }
+    })
+
+    if (response.ok) {
+      sl.fire({
+        text: "comment deleted",
+        icon: 'success',
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 1000,
+      })
+      return true
+    }
+    else {
+      const error = await response.json()['error']
+      console.log(error)
+      return false
+    }
+  }
+
   const comment = async (text, id) => {
     if (!tokens) return
 
@@ -260,7 +286,9 @@ export function UserActionsProvider({children}){
   }
 
   return (
-    <UserActionsContext.Provider value={{follow, unfollow, like, unlike, get_post, delete_post, get_profile, make_post, comment, mark_message_as_read, mark_notification_as_read}}>
+    <UserActionsContext.Provider 
+      value={{follow, unfollow, like, unlike, get_post, delete_post, delete_comment, get_profile,
+              make_post, comment, mark_message_as_read, mark_notification_as_read}}>
       {children}
     </UserActionsContext.Provider>
   )
