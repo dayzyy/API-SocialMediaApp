@@ -62,6 +62,15 @@ export default function PostPage(){
 
   if (!post || !user) return <main className="pt-36 flex justify-center"><Loading/></main>
 
+  const sorted_comments = post.comments.sort((a, b) => b.created_at.localeCompare(a.created_at)).sort((a, b) => {
+    if (a.author.id == user.id) {
+      if (b.author.id != user.id) return -1
+      else return b.created_at.localeCompare(a.created_at)
+    }
+    else if (b.author.id == user.id) return 1
+    else return 0
+  })
+
   return (
     <main className="w-screen pt-36  px-4  flex flex-col items-center">
       <div className="w-full md:max-w-[750px]  flex flex-col gap-4">
@@ -102,7 +111,7 @@ export default function PostPage(){
           { 
             post.comments.length > 0 &&
               <div className="flex flex-col gap-4">
-                {post.comments.sort((a, b) => b.created_at.localeCompare(a.created_at)).map(comment => {
+                {sorted_comments.map(comment => {
                   return (
                     <div key={comment.id} className="div">
                       <ProfileBar key={comment.id} profile={comment.author} link={`/profile/${comment.author.id}`} timestamp={comment.created_at} small={true} hover_color={'gray-50'}/>
