@@ -165,7 +165,7 @@ export function UserActionsProvider({children}){
   }
 
   const delete_post = async id => {
-    const response = await fetch(`${API_URL}/post/delete/${id}/`, {
+    const response = await fetch(`${API_URL}/user/post/delete/${id}/`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'applicaton/json',
@@ -185,7 +185,7 @@ export function UserActionsProvider({children}){
       navigate('/home')
 
       setUser(prev => {
-        updated_user = {...prev}
+        let updated_user = {...prev}
 
         updated_user.posts = updated_user.posts.filter(post => post.id != id)
 
