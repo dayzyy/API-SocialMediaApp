@@ -14,7 +14,7 @@ import ToggleFollowButton from "../components/ToggleFollowButton";
 export default function Profile(){
   const { id } = useParams()
   const { tokens, user } = useAuth()
-  const { get_user_by_id } = useUserActions()
+  const { get_profile_by_id } = useUserActions()
   const [profile, setProfile] = useState(null)
   const [toggledOption, setToggledOption] = useState("posts")
 
@@ -22,9 +22,9 @@ export default function Profile(){
     if (!tokens) return
 
     const fetch_profile = async _ => {
-      const profile_data = await get_user_by_id(id)
+      const profile_data = await get_profile_by_id(id)
 
-      if (profile_data) setProfile(user_data)
+      if (profile_data) setProfile(profile_data)
     }
 
     fetch_profile()

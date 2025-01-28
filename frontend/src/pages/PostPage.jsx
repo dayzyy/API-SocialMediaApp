@@ -21,6 +21,7 @@ export default function PostPage(){
   const { user } = useAuth()
   const { get_post, comment, delete_post, delete_comment } = useUserActions()
   const [post, setPost] = useState(null)
+  const [refreshPost, setRefreshPost] = useState(0)
   const [message, setMessage] = useState('')
   const sl = Swal
 
@@ -31,7 +32,7 @@ export default function PostPage(){
 
   useEffect(_ => {
     fetch_post()
-  }, [id])
+  }, [id, refreshPost])
 
   const handle_click = async _ => {
     if (!post) return
@@ -48,7 +49,10 @@ export default function PostPage(){
     }
 
     const status = await comment(message, post.id)
-    if (status == 200) setMessage('')
+    if (status == 200) {
+      setMessage('')
+      setRefreshPost(prev => prev + 1)
+    }
   }
 
   const handle_comment_delete = async id => {
@@ -58,6 +62,7 @@ export default function PostPage(){
         const updated_post = {...prev}
 
         updated_post.comments = updated_post.comments.filter(comment => comment.id != id)
+        updated_post.comment_count -= 1
 
         return updated_post
       })
