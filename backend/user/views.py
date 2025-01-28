@@ -106,7 +106,7 @@ def unfollow(request, id):
 
     return Response({"success": f"stopped following {friend.email}!"}, status=200)
 
-# POST CRUD OPERATIONS
+# POST CRUD OPERATIONS options:[READ(GET), CREATE, DELETE]
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -150,7 +150,7 @@ def delete_post(request, id):
     post.delete()
     return Response({"success": "post deleted!"}, status=200)
 
-# COMMENT CRUD OPERATIONS
+# COMMENT CRUD OPERATIONS options:[CREATE, DELETE]
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])

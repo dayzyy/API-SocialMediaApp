@@ -37,6 +37,7 @@ def notify_user(user, serialized_data):
         }
     )
 
+# Get all notifications
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_notifications(request):
@@ -49,6 +50,7 @@ def get_notifications(request):
 
     return Response(all_notifications, status=200)
 
+# Get new(unread) notifications
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def new_notifications(request):
@@ -61,6 +63,7 @@ def new_notifications(request):
 
     return Response({"count": count}, status=200)
 
+# Mark notificatio as read
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
 def mark_as_read(request, id):
