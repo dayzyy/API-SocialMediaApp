@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useUserActions } from "../context/UserActionsContext";
 
-import API_URL from "../settings";
 import Loading from "../components/Loading";
 import GoBackButton from "../components/GoHomeButton";
 import InfoButton from "../components/InfoButton";
@@ -14,27 +14,20 @@ import ToggleFollowButton from "../components/ToggleFollowButton";
 export default function Profile(){
   const { id } = useParams()
   const { tokens, user } = useAuth()
+  const { get_user_by_id } = useUserActions()
   const [profile, setProfile] = useState(null)
   const [toggledOption, setToggledOption] = useState("posts")
 
   useEffect(_ => {
     if (!tokens) return
 
-    const get_profile = async _ => {
-      const response = await fetch(`${API_URL}/user/get/${id}/`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${tokens.access}`
-        }
-      })
+    const fetch_profile = async _ => {
+      const profile_data = await get_user_by_id(id)
 
-      if (response.status == 200) {
-        const data = await response.json()
-        setProfile(data)
-      }
+      if (profile_data) setProfile(user_data)
     }
-    get_profile()
+
+    fetch_profile()
   }, [tokens, id])
 
 

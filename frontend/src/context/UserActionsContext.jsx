@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 import API_URL from "../settings";
 import Swal from "sweetalert2";
+import { handle_response_error, handle_api_problem } from "../utils/errorHandlingUtils";
 
 const UserActionsContext = createContext()
 
@@ -12,110 +13,107 @@ export function UserActionsProvider({children}){
   const navigate = useNavigate()
   const sl = Swal
 
+  // FOLLOW AND UNFOLLOW
+
   const follow = async id => {
     if (!tokens) return
 
-    await fetch(`${API_URL}/user/follow/${id}/`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${tokens.access}`
-      }
-    })
+    let response;
+    try {
+      response = await fetch(`${API_URL}/user/follow/${id}/`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${tokens.access}`
+        }
+      })
+    } catch (error) {handle_api_problem(error)}
 
-    get_user()
+    if (response.ok) {
+      get_user()
+    }
+    else await handle_response_error(response)
   }
 
   const unfollow = async id => {
     if (!tokens) return
 
-    await fetch(`${API_URL}/user/unfollow/${id}/`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${tokens.access}`
-      }
-    })
+    let response;
+    try {
+       response = await fetch(`${API_URL}/user/unfollow/${id}/`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${tokens.access}`
+        }
+      })
+    } catch(error) {handle_api_problem(error)}
 
-    setUser(prev => {
-      let updated_user = {...prev}
+    if (response.ok) {
+      setUser(prev => {
+        let updated_user = {...prev}
 
-      updated_user.following = updated_user.following.filter(friend => friend.id != id)
+        updated_user.following = updated_user.following.filter(friend => friend.id != id)
 
-      return updated_user
-    })
+        return updated_user
+      })
+    }
+    else await handle_response_error(response)
   }
+
+  // LIKE AND UNLIKE
 
   const like = async id => {
     if (!tokens) return
 
-    await fetch(`${API_URL}/user/post/${id}/like/`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${tokens.access}`
-      }
-    })
+    try {
+      await fetch(`${API_URL}/user/post/${id}/like/`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${tokens.access}`
+        }
+      })
+    } catch(error) {handle_api_problem(error)}
   }
 
   const unlike = async id => {
     if (!tokens) return
 
-    await fetch(`${API_URL}/user/post/${id}/unlike/`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${tokens.access}`
-      }
-    })
+    try {
+      await fetch(`${API_URL}/user/post/${id}/unlike/`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${tokens.access}`
+        }
+      })
+    } catch(error) {handle_api_problem(error)}
   }
 
+  // POST CRUD OPERATIONS options:[READ(GET), CREATE, DELETE]
+  
   const get_post = async id => {
     if (!tokens) return
       
-    const response = await fetch(`${API_URL}/user/post/get/${id}/`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'applicaton/json',
-        'Authorization': `Bearer ${tokens.access}`
-      }
-    })
-
-    if (response.status == 200) {
-      const data = await response.json()
-      return data
-    }
-  }
-
-  const get_profile = async email => {
-    if (!email) {
-      sl.fire({
-        text: "type in an email",
-        icon: 'error',
-        position: 'top-end',
-        showConfirmButton: false,
-        timer: 1000,
+    let response;
+    try {
+      response = await fetch(`${API_URL}/user/post/get/${id}/`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'applicaton/json',
+          'Authorization': `Bearer ${tokens.access}`
+        }
       })
-      return
-    }
+    } catch(error) {handle_api_problem(error)}
 
-    if (!user || !tokens) return
-  
-    const response = await fetch(`${API_URL}/user/get/${encodeURIComponent(email)}/`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${tokens.access}`
-      }
-    })
-
-    if (response.status == 200) {
+    if (response.ok) {
       const data = await response.json()
       return data
     }
-    if (response.status == 404) return null
+    else await handle_response_error(response)
   }
-
+  
   const make_post = async text => {
     if (!user || !tokens) return
 
@@ -141,18 +139,21 @@ export function UserActionsProvider({children}){
       return
     }
 
-    const response = await fetch(`${API_URL}/user/post/add/`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${tokens.access}`
-      },
-      body: JSON.stringify({
-        text: text
+    let response;
+    try {
+       response = await fetch(`${API_URL}/user/post/add/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${tokens.access}`
+        },
+        body: JSON.stringify({
+          text: text
+        })
       })
-    })
+    } catch(error) {handle_api_problem(error)}
 
-    if (response.status == 200) {
+    if (response.ok) {
       sl.fire({
         text: "post made successfuly",
         icon: 'success',
@@ -162,18 +163,22 @@ export function UserActionsProvider({children}){
       })
       return 200
     }
+    else await handle_response_error(response)
   }
 
   const delete_post = async id => {
-    const response = await fetch(`${API_URL}/user/post/delete/${id}/`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'applicaton/json',
-        'Authorization': `Bearer ${tokens.access}`
-      }
-    })
+    let response;
+    try {
+       response = await fetch(`${API_URL}/user/post/delete/${id}/`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'applicaton/json',
+          'Authorization': `Bearer ${tokens.access}`
+        }
+      })
+    } catch(error) {handle_api_problem(error)}
 
-    if (response.status == 200) {
+    if (response.ok) {
       sl.fire({
         text: "post deleted!",
         icon: 'success',
@@ -192,21 +197,105 @@ export function UserActionsProvider({children}){
         return updated_user
       })
     }
+    else await handle_response_error(response)
+  }
 
-    if (response.status == 404) {
-      const error = await response.json()
-      console.log(error)
+  // GET PROFILE BY EMAIL OR ID
+
+  const get_profile_by_email = async email => {
+    if (!email) {
+      sl.fire({
+        text: "type in an email",
+        icon: 'error',
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 1000,
+      })
+      return
     }
+
+    if (!user || !tokens) return
+  
+    let response;
+    try {
+      response = await fetch(`${API_URL}/user/get/${encodeURIComponent(email)}/`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${tokens.access}`
+        }
+      })
+    } catch(error) {handle_api_problem(error)}
+
+    if (response.ok) {
+      const data = await response.json()
+      return data
+    }
+    else if (response.status == 404) return null
+    else await handle_response_error(response)
+  }
+
+  const get_profile_by_id = async id => {
+    let response;
+    try {
+       response = await fetch(`${API_URL}/user/get/${id}/`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${tokens.access}`
+        }
+      })
+    } catch(error) {handle_api_problem(error)}
+
+    if (response.ok) {
+      const data = await response.json()
+      return data
+    }
+    else if (response.status == 404) return null
+    else await handle_response_error(response)
+  }
+
+  // COMMENT CRUD OPERATIONS options:[CREATE, DELETE]
+
+  const comment = async (text, id) => {
+    if (!tokens) return
+
+    let response;
+    try {
+       response = await fetch(`${API_URL}/user/post/${id}/comment/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'applicaton/json',
+          'Authorization': `Bearer ${tokens.access}`
+        },
+        body: JSON.stringify({text: text})
+      })
+    } catch(error) {handle_api_problem(error)}
+
+    if (response.ok) {
+      sl.fire({
+        text: "comment added",
+        icon: 'success',
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 1000,
+      })
+      return 200
+    }
+    else await handle_response_error(response)
   }
 
   const delete_comment = async id => {
-    const response = await fetch(`${API_URL}/user/post/comment/${id}/delete/`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'applicaton/json',
-        'Authorization': `Bearer ${tokens.access}`
-      }
-    })
+    let response;
+    try {
+       response = await fetch(`${API_URL}/user/post/comment/${id}/delete/`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'applicaton/json',
+          'Authorization': `Bearer ${tokens.access}`
+        }
+      })
+    } catch(error) {handle_api_problem(error)}
 
     if (response.ok) {
       sl.fire({
@@ -218,77 +307,59 @@ export function UserActionsProvider({children}){
       })
       return true
     }
-    else {
-      const error = await response.json()['error']
-      console.log(error)
-      return false
-    }
+    else await handle_response_error(response)
   }
 
-  const comment = async (text, id) => {
-    if (!tokens) return
-
-    const response = await fetch(`${API_URL}/user/post/${id}/comment/`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'applicaton/json',
-        'Authorization': `Bearer ${tokens.access}`
-      },
-      body: JSON.stringify({text: text})
-    })
-
-    if (response.status == 200) {
-      sl.fire({
-        text: "comment added",
-        icon: 'success',
-        position: 'top-end',
-        showConfirmButton: false,
-        timer: 1000,
-      })
-      return 200
-    }
-  }
+  // MARKING MESSAGES AND NOTIFICATIONS AS READ
 
   const mark_message_as_read = async (friend, message_id) => {
-    await fetch(`${API_URL}/chat/${friend.id}/${message_id}/`,  {
-      method: 'PUT',
-      headers: {
-        'Content-type': 'application/json',
-        'Authorization': `Bearer ${tokens.access}`
-      }
-    })
-
-    setUser(prev => {
-      let updated_user = {...prev}
-
-      updated_user.following = updated_user.following.map(f => {
-        if (f.id == friend.id) {
-          return {...f, last_message: {...f.last_message, is_read: true}}
-        }
-        else {
-          return f
+    let response;
+    try {
+      response = await fetch(`${API_URL}/chat/${friend.id}/${message_id}/`,  {
+        method: 'PUT',
+        headers: {
+          'Content-type': 'application/json',
+          'Authorization': `Bearer ${tokens.access}`
         }
       })
+    } catch(error) {handle_api_problem(error)}
 
-      return updated_user
-    })
+    if (response.ok) {
+      setUser(prev => {
+        let updated_user = {...prev}
+
+        updated_user.following = updated_user.following.map(f => {
+          if (f.id == friend.id) {
+            return {...f, last_message: {...f.last_message, is_read: true}}
+          }
+          else {
+            return f
+          }
+        })
+
+        return updated_user
+      })
+    }
+    else await handle_response_error(response)
   }
 
   const mark_notification_as_read = async notification => {
-    await fetch(`${API_URL}/notification/${notification.id}/seen/`, {
-      method: 'PUT',
-      headers: {
-        'Content-type': 'application/json',
-        'Authorization': `Bearer ${tokens.access}`
-      },
-      body: JSON.stringify({"category": notification.category})
-    })
+    try {
+      await fetch(`${API_URL}/notification/${notification.id}/seen/`, {
+        method: 'PUT',
+        headers: {
+          'Content-type': 'application/json',
+          'Authorization': `Bearer ${tokens.access}`
+        },
+        body: JSON.stringify({"category": notification.category})
+      })
+    } catch(error) {handle_api_problem(error)}
   }
 
   return (
     <UserActionsContext.Provider 
-      value={{follow, unfollow, like, unlike, get_post, delete_post, delete_comment, get_profile,
-              make_post, comment, mark_message_as_read, mark_notification_as_read}}>
+      value={{follow, unfollow, like, unlike, get_post, delete_post, delete_comment, get_profile_by_email,
+              get_profile_by_id, make_post, comment, mark_message_as_read, mark_notification_as_read}}>
       {children}
     </UserActionsContext.Provider>
   )

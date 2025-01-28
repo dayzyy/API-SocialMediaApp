@@ -15,10 +15,10 @@ export default function Friends(){
   const [searchedUser, setSearchedUser] = useState(null)
   const [toggledOption, setToggledOption] = useState("following")
   const { user } = useAuth()
-  const { get_profile } = useUserActions()
+  const { get_profile_by_email } = useUserActions()
 
   const handle_search = async _ => {
-    const profile = await get_profile(email)
+    const profile = await get_profile_by_email(email)
     
     if (profile) setSearchedUser(profile)
     else setSearchedUser({id: -1121})

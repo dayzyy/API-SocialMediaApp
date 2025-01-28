@@ -1,11 +1,11 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useAuth } from "./AuthContext";
 import { useUserActions } from "./UserActionsContext.jsx"
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import API_URL from "../settings";
-
 import Swal from "sweetalert2";
+import { handle_response_error, handle_api_problem } from "../utils/errorHandlingUtils.jsx";
 
 const NotificationContext = createContext()
 
@@ -15,22 +15,28 @@ export function NotificationProvider({children}){
   const [liveNotifications, setLiveNotifications] = useState([])
   const { user, tokens, setUser } = useAuth()
   const { mark_message_as_read } = useUserActions()
+  const navigate = useNavigate()
   const location = useLocation()
   const sl = Swal
 
+  // Get the count of new(unread) notifications
   const get_new_notifications_count = async _ => {
-    const response = await fetch(`${API_URL}/notification/new/`, {
+    let response;
+    try {
+     response = await fetch(`${API_URL}/notification/new/`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${tokens.access}`
       }
     })
+    } catch(error) {handle_api_problem(error)}
 
-    if (response.status == 200) {
+    if (response.ok) {
       const data = await response.json()
       setNotificationCount(data.count)
     }
+    else await handle_response_error(response)
   }
 
   useEffect(_ => {
@@ -60,11 +66,31 @@ export function NotificationProvider({children}){
     }
   }, [liveNotifications])
 
+  // Initiate a websocket connection with the backend server to recieve notifications in real time
   useEffect(_ => {
     if (!user) return
 
     const ws = new WebSocket(`${API_URL}/ws/notifications/${encodeURIComponent(tokens.access)}/`)
     setSocket(ws)
+
+    ws.onerror = error => {
+      console.error("error while trying to connect to the websocket", error)
+    }
+
+    ws.onclose = event => {
+      if (!event.wasClean || event.code == 1006) {
+        console.error("Websocket connection failed or was refused!")
+
+        navigate('/directs')
+        sl.fire({
+          text: "couldnt establish connection with the chat server",
+          icon: 'error',
+          position: 'center',
+          showConfirmButton: false,
+          timer: 2500,
+        })
+      }
+    }
 
     ws.onmessage = event => {
       const notification = JSON.parse(event.data)
@@ -94,22 +120,27 @@ export function NotificationProvider({children}){
     }
   }, [user])
 
+  // Get all the notifications
   const get_notifications = async _ => {
     if (!tokens) return
 
-    const response = await fetch(`${API_URL}/notification/all/`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${tokens.access}`
-      }
-    })
+    let response;
+    try {
+       response = await fetch(`${API_URL}/notification/all/`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${tokens.access}`
+        }
+      })
+    } catch(error) {handle_api_problem(error)}
 
-    if (response.status == 200) {
+    if (response.ok) {
       setLiveNotifications([])
       const data = await response.json()
       return data
     }
+    else await handle_response_error(response)
   }
 
   return(
