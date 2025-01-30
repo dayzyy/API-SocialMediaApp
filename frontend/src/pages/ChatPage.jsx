@@ -1,8 +1,10 @@
 import API_URL from '../settings'
+import Swal from 'sweetalert2'
 
 import { useLocation, useNavigate } from "react-router-dom"
 import { useEffect, useState } from 'react'
 import { useAuth } from '../context/AuthContext'
+import { useUserActions } from '../context/UserActionsContext'
 
 import { format_time } from '../utils/dateUtils'
 
@@ -12,10 +14,12 @@ import Loading from '../components/Loading'
 import GoBackButton from '../components/GoBackButton';
 
 export default function Chat(){
+  const sl = Swal
   const navigate = useNavigate()
   const location = useLocation()
   const friend = location.state?.friend
-  const {user, tokens} = useAuth()
+  const { user, tokens } = useAuth()
+  const { update_user_last_message } = useUserActions()
 
   const [message, setMessage] = useState('')
   const [messages, setMessages] = useState(null)
@@ -33,10 +37,30 @@ export default function Chat(){
     const ws = new WebSocket(`${API_URL}/ws/chat/${friend.id}/${encodeURIComponent(tokens.access)}/`)
     setSocket(ws)
 
+    ws.onerror = error => {
+      console.error("error while trying to connect to the websocket", error)
+    }
+
+    ws.onclose = event => {
+      if (!event.wasClean || event.code == 1006) {
+        console.error("Websocket connection failed or was refused!")
+
+        navigate('/directs')
+        sl.fire({
+          text: "couldnt establish connection with the chat server",
+          icon: 'error',
+          position: 'center',
+          showConfirmButton: false,
+          timer: 2500,
+        })
+      }
+    }
+
     ws.onmessage = event => {
       const data = JSON.parse(event.data)
       const newMessage = data.message
       setMessages(prev => [...prev, newMessage])
+      update_user_last_message(newMessage)
     }
 
     return _ => {
@@ -99,6 +123,7 @@ export default function Chat(){
 
       <div id="chat" className="w-full  flex-1  flex flex-col  overflow-y-auto gap-1 p-4">
         {!messages && <Loading addCss="self-center"/>}
+        <p className="self-center text-xl text-gray-500 font-bold  mb-8">Start of your conversation!</p>
         {messages && messages.map((msg, index) => {
           const acc = msg.sender == user.email ? user : friend
           const isLastMessage = index === messages.length - 1 || messages[index + 1]?.sender != msg.sender

@@ -356,10 +356,28 @@ export function UserActionsProvider({children}){
     } catch(error) {handle_api_problem(error)}
   }
 
+  // Update the state of user
+  // (change last message in a specific chat, when new messages are sent. This is done so that component re-renders and you can see the last message dispalyed at '/directs' right away)
+  const update_user_last_message = msg => {
+    setUser(prev => {
+      const updatedUser = {...prev}
+
+      updatedUser.following = updatedUser.following.map(f => {
+        if (msg.sender == f.email || msg.recipient == f.email) {
+          console.log('Found!')
+          return {...f, last_message: msg}
+        }
+        else return {...f}
+      })
+
+      return updatedUser
+    })
+  }
+
   return (
     <UserActionsContext.Provider 
       value={{follow, unfollow, like, unlike, get_post, delete_post, delete_comment, get_profile_by_email,
-              get_profile_by_id, make_post, comment, mark_message_as_read, mark_notification_as_read}}>
+              get_profile_by_id, make_post, comment, mark_message_as_read, mark_notification_as_read, update_user_last_message}}>
       {children}
     </UserActionsContext.Provider>
   )

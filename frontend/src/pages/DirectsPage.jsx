@@ -53,7 +53,9 @@ export default function Directs(){
                 <div className="flex gap-2 items-center">
                   {friend.last_message.sender && friend.last_message.sender == user.email && <p className={`text-sm text-gray-600`}>You:</p>}
                   <p className={`text-sm text-gray-400 ${friend.last_message.sender && friend.last_message.sender !== user.email && !friend.last_message.is_read ?'font-bold text-gray-500':''}`}>
-                    {friend.last_message.content != '' ? friend.last_message.content.slice(0, 7) + '...' : 'Start a conversation!'}
+                    {friend.last_message.content != ''
+                      ? friend.last_message.content.slice(0, 7) + (friend.last_message.content.length > 7 ? '...' : '')
+                      : 'Start a conversation!'}
                   </p>
                   {friend.last_message.sender && <p className={`text-sm text-gray-600`}>{format_time(friend.last_message.created_at)}</p>}
                 </div>
