@@ -24,11 +24,11 @@ With Rmedia, you can **add friends, share your thoughts with your followers by m
 - **Chat** with your friends in real time (using **Django channels**)
 - **Recieve real-time notifications** when:
 
-    \1. Someone starts following you
-    \2. Someone likes your post
-    \3. Someone comments on your post
-    \4. Someone that you follow makes a post
-    \5. Someone messages you
+    - Someone starts following you
+    - Someone likes your post
+    - Someone comments on your post
+    - Someone that you follow makes a post
+    - Someone messages you
 
     (Notifications appear as pop-ups only when you are online, but they are saved in the database and can be viewed on a distinct 'notification' page)
 
