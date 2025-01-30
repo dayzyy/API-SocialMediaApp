@@ -9,7 +9,7 @@ import { format_time } from '../utils/dateUtils'
 import { BsSendFill } from "react-icons/bs";
 
 import Loading from '../components/Loading'
-import GoBackButton from '../components/GoHomeButton';
+import GoBackButton from '../components/GoBackButton';
 
 export default function Chat(){
   const navigate = useNavigate()

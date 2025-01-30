@@ -4,7 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import { useUserActions } from "../context/UserActionsContext";
 
 import Loading from "../components/Loading";
-import GoBackButton from "../components/GoHomeButton";
+import GoBackButton from "../components/GoBackButton";
 import InfoButton from "../components/InfoButton";
 import Post from "../components/Post";
 import ProfileBar from "../components/ProfileBar";

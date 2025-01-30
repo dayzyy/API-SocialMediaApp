@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { useUserActions } from "../context/UserActionsContext"
 
-import GoBackButton from "../components/GoHomeButton"
+import GoBackButton from "../components/GoBackButton"
 
 export default function AddPost(){
   const [text, setText] = useState('')

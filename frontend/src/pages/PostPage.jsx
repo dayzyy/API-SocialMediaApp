@@ -3,7 +3,7 @@ import { useAuth } from "../context/AuthContext";
 import { useUserActions } from "../context/UserActionsContext";
 import { useEffect, useState } from "react";
 
-import GoBackButton from "../components/GoHomeButton";
+import GoBackButton from "../components/GoBackButton";
 import LikeButton from "../components/LikeButton";
 import CommentButton from "../components/CommentButton";
 import MoreOptionsButton from "../components/MoreOptionsButton"

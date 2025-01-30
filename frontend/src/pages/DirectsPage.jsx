@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom"
 import API_URL from "../settings"
 import { format_time } from "../utils/dateUtils"
 
-import GoBackButton from "../components/GoHomeButton"
+import GoBackButton from "../components/GoBackButton"
 
 export default function Directs(){
   const { user} = useAuth()
@@ -14,7 +14,7 @@ export default function Directs(){
   const navigate = useNavigate()
 
 
-  if (!user) return <Loading/>
+  if (!user) return <main className="pt-36 w-screen flex justify-center"><Loading/></main>
 
   const sorted_friends = user.following.sort((a, b) => {
     const date_a = a.last_message?.created_at || null

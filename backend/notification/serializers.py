@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 from chat.serializers import MessageSerializer
 
-from .models import PostNotification, LikeNotification, FollowNotification, CommentNotification
+from .models import PostNotification, LikeNotification, FollowNotification 
 from user.serializers import BaseUserSerializer, BasePostSerializer
 from chat.models import Message
 

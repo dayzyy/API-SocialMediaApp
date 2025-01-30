@@ -5,7 +5,7 @@ import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 import Loading from "../components/Loading";
-import GoBackButton from "../components/GoHomeButton";
+import GoBackButton from "../components/GoBackButton";
 import ProfileBar from "../components/ProfileBar";
 
 import { IoMdPersonAdd } from "react-icons/io";

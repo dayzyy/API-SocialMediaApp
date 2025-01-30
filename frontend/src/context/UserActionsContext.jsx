@@ -187,7 +187,7 @@ export function UserActionsProvider({children}){
         timer: 1000,
       })
 
-      navigate('/home')
+      navigate(-1)
 
       setUser(prev => {
         let updated_user = {...prev}

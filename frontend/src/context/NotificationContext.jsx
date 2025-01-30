@@ -95,7 +95,19 @@ export function NotificationProvider({children}){
     ws.onmessage = event => {
       const notification = JSON.parse(event.data)
 
-      if (location.pathname != `/chat/${notification.sender.first_name}${notification.sender.last_name}`) {
+      if (notification.category == "message") {
+        if (location.pathname != `/chat/${notification.sender.first_name}${notification.sender.last_name}`) {
+          sl.fire({
+            text: notification.message,
+            icon: 'info',
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 1500,
+          })
+        }
+        else mark_message_as_read(notification.sender, notification.content.id)
+      }
+      else {
         sl.fire({
           text: notification.message,
           icon: 'info',
@@ -103,10 +115,6 @@ export function NotificationProvider({children}){
           showConfirmButton: false,
           timer: 1500,
         })
-      }
-
-      if (notification.category == "message" && location.pathname == `/chat/${notification.sender.first_name}${notification.sender.last_name}`) {
-        mark_message_as_read(notification.sender, notification.content.id)
       }
 
       setLiveNotifications(prev => [...prev, notification])

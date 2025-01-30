@@ -200,7 +200,18 @@ export function AuthProvider({children}){
         setTokens(prev => ({...prev, access: data.access}))
       }
       else{
+        localStorage.removeItem('tokens')
+        setUser(null)
+
         navigate('/login')
+        sl.fire({
+          title: "Session expired!",
+          text: "log in again",
+          icon: 'info',
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 1000,
+        })
       }
     }
     else await handle_response_error(response)
