@@ -167,6 +167,8 @@ export function UserActionsProvider({children}){
   }
 
   const delete_post = async id => {
+    if (!tokens) return
+
     let response;
     try {
        response = await fetch(`${API_URL}/user/post/delete/${id}/`, {
@@ -236,6 +238,8 @@ export function UserActionsProvider({children}){
   }
 
   const get_profile_by_id = async id => {
+    if (!tokens) return
+
     let response;
     try {
        response = await fetch(`${API_URL}/user/get/${id}/`, {
@@ -286,6 +290,8 @@ export function UserActionsProvider({children}){
   }
 
   const delete_comment = async id => {
+    if (!tokens) return
+
     let response;
     try {
        response = await fetch(`${API_URL}/user/post/comment/${id}/delete/`, {
@@ -313,6 +319,8 @@ export function UserActionsProvider({children}){
   // MARKING MESSAGES AND NOTIFICATIONS AS READ
 
   const mark_message_as_read = async (friend, message_id) => {
+    if (!tokens) return
+
     let response;
     try {
       response = await fetch(`${API_URL}/chat/${friend.id}/${message_id}/`,  {
@@ -344,6 +352,8 @@ export function UserActionsProvider({children}){
   }
 
   const mark_notification_as_read = async notification => {
+    if (!tokens) return
+
     try {
       await fetch(`${API_URL}/notification/${notification.id}/seen/`, {
         method: 'PUT',
@@ -363,7 +373,7 @@ export function UserActionsProvider({children}){
       const updatedUser = {...prev}
 
       updatedUser.following = updatedUser.following.map(f => {
-        if (msg.sender == f.email || msg.recipient == f.email) {
+        if (msg.recipient == f.email) {
           console.log('Found!')
           return {...f, last_message: msg}
         }
@@ -374,10 +384,42 @@ export function UserActionsProvider({children}){
     })
   }
 
+  // UPDATE PROFILE
+
+  const update_profile_picture = async picture => {
+    if (!picture || !tokens) return
+
+    const formData = new FormData()
+    formData.append('picture', picture)
+
+    let response;
+    try {
+      response = await fetch(`${API_URL}/user/update/picture/`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${tokens.access}`
+        },
+        body: formData
+      })
+    } catch(error) {handle_api_problem(error)}
+
+    if (response.ok) {
+      sl.fire({
+        text: "profile updated!",
+        icon: 'success',
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 1000,
+      })
+      get_user()
+    }
+    else await handle_response_error(response)
+  }
+
   return (
     <UserActionsContext.Provider 
       value={{follow, unfollow, like, unlike, get_post, delete_post, delete_comment, get_profile_by_email,
-              get_profile_by_id, make_post, comment, mark_message_as_read, mark_notification_as_read, update_user_last_message}}>
+              get_profile_by_id, make_post, comment, mark_message_as_read, mark_notification_as_read, update_user_last_message, update_profile_picture}}>
       {children}
     </UserActionsContext.Provider>
   )

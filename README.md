@@ -23,6 +23,7 @@ With Rmedia, you can **add friends, share your thoughts with your followers by m
 - **Leave and delete comments** under posts
 - **Chat** with your friends in real time (using **Django channels**)
 - **Recieve real-time notifications** when:
+
     1. Someone starts following you
     2. Someone likes your post
     3. Someone comments on your post

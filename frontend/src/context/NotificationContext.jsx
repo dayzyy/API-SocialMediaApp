@@ -15,7 +15,6 @@ export function NotificationProvider({children}){
   const [liveNotifications, setLiveNotifications] = useState([])
   const { user, tokens, setUser } = useAuth()
   const { mark_message_as_read } = useUserActions()
-  const navigate = useNavigate()
   const location = useLocation()
   const sl = Swal
 
@@ -68,22 +67,21 @@ export function NotificationProvider({children}){
 
   // Initiate a websocket connection with the backend server to recieve notifications in real time
   useEffect(_ => {
-    if (!user) return
+    if (!tokens) return
 
     const ws = new WebSocket(`${API_URL}/ws/notifications/${encodeURIComponent(tokens.access)}/`)
     setSocket(ws)
 
     ws.onerror = error => {
-      console.error("error while trying to connect to the websocket", error)
+      console.error("error while trying to connect to the notification websocket", error)
     }
 
     ws.onclose = event => {
       if (!event.wasClean || event.code == 1006) {
         console.error("Websocket connection failed or was refused!")
 
-        navigate('/directs')
         sl.fire({
-          text: "couldnt establish connection with the chat server",
+          text: "couldnt establish connection with the server",
           icon: 'error',
           position: 'center',
           showConfirmButton: false,
@@ -126,7 +124,7 @@ export function NotificationProvider({children}){
         ws.close()
       }
     }
-  }, [user])
+  }, [])
 
   // Get all the notifications
   const get_notifications = async _ => {

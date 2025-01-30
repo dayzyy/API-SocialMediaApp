@@ -12,6 +12,7 @@ import NotificationsPage from './pages/NotificationsPage'
 import PostPage from './pages/PostPage'
 
 import AddPostPage from './pages/AddPostPage'
+import EditProfilePage from './pages/EditProfilePage'
 
 import NotFoundPage from './pages/NotFoundPage'
 import SettingsPage from './pages/SettingsPage'
@@ -23,6 +24,7 @@ export default function App(){
       <Route path='/signup' element={<SignupPage/>}/>
       <Route path='/login' element={<LoginPage/>}/>
       <Route path='/profile/:id' element={<ProfilePage/>}/>
+      <Route path='/profile/edit' element={<EditProfilePage/>}/>
       <Route path='/directs' element={<DirectsPage/>}/>
       <Route path='/chat/:friend' element={<ChatPage/>}/>
       <Route path='/post/:id' element={<PostPage/>}/>

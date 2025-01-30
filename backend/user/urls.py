@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import delete_comment, delete_post, get_post, register, get_user, get_profile_by_email, get_profile_by_id, follow, unfollow, make_post, like_post, unlike_post, make_comment 
+from .views import delete_comment, delete_post, get_post, register, get_user, get_profile_by_email, get_profile_by_id, follow, unfollow, make_post, like_post, unlike_post, make_comment, update_profile_picture
 
 urlpatterns = [
     path('register/', register, name='register'),
@@ -18,5 +18,7 @@ urlpatterns = [
     path('post/<int:id>/like/', like_post, name='like-post'),
     path('post/<int:id>/unlike/', unlike_post, name='unlike-post'),
     path('post/<int:post_id>/comment/', make_comment, name='comment-on-post'),
-    path('post/comment/<int:id>/delete/', delete_comment, name='delete-comment')
+    path('post/comment/<int:id>/delete/', delete_comment, name='delete-comment'),
+
+    path('update/picture/', update_profile_picture, name='update-profile-picture')
 ]

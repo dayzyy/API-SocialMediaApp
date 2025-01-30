@@ -117,7 +117,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     @database_sync_to_async
     def create_message(self, chat, message):
-        message = Message.objects.create(chat=chat, content=message, sender=self.user)
+        message = Message.objects.create(chat=chat, content=message, sender=self.user, recipient=self.friend)
         if message:
             notify_user(self.friend, MessageNotificationSerializer(message).data)
             return message

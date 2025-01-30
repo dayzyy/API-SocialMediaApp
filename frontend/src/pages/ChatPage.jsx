@@ -38,7 +38,7 @@ export default function Chat(){
     setSocket(ws)
 
     ws.onerror = error => {
-      console.error("error while trying to connect to the websocket", error)
+      console.error("error while trying to connect to the chat websocket", error)
     }
 
     ws.onclose = event => {

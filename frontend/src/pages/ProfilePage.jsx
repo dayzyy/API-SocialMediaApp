@@ -10,6 +10,7 @@ import Post from "../components/Post";
 import ProfileBar from "../components/ProfileBar";
 
 import ToggleFollowButton from "../components/ToggleFollowButton";
+import EditProfileButton from "../components/EditProfileButton";
 
 export default function Profile(){
   const { id } = useParams()
@@ -38,7 +39,7 @@ export default function Profile(){
       <div className="w-full md:w-[750px]  flex flex-col gap-8">
         <GoBackButton addCss="self-start"/>
 
-        <ProfileBar profile={profile} big={true} button={profile.id == user.id ? null : <ToggleFollowButton profile={profile} big={true}/>}/>
+        <ProfileBar profile={profile} big={true} button={profile.id == user.id ? <EditProfileButton/> : <ToggleFollowButton profile={profile} big={true}/>}/>
 
         <div className="w-full flex justify-around">
           <InfoButton text={`Posts ~${profile.posts.length}`} toggled={toggledOption === "posts"} on_click={_ => setToggledOption("posts")}/>

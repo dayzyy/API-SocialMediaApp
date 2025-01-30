@@ -1,3 +1,5 @@
+import API_URL from "../settings";
+
 import { FaReact } from "react-icons/fa6";
 import { AiOutlineMessage } from "react-icons/ai";
 

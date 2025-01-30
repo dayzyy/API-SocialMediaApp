@@ -60,6 +60,23 @@ def get_profile_by_id(request, id):
     except User.DoesNotExist:
         return Response({"error": f"user [id: {id}] not found!"}, status=404)
 
+# UPDATE PROFILE
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def update_profile_picture(request):
+    try:
+        if 'picture' not in request.FILES:
+            return Response({"error": "no picture provided"}, status=400)
+
+        pfp = request.FILES['picture']
+        request.user.profile_picture = pfp
+        request.user.save()
+        return Response({"success": "profile picture updated!"}, status=200)
+    except Exception:
+        return Response(status=500)
+
+
 # FOLLOW AND UNFOLLOW USERS
 
 @api_view(['GET'])
