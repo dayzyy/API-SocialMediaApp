@@ -38,7 +38,7 @@ With Rmedia, you can **add friends, share your thoughts with your followers by m
 - **Node.js**
 
 ## Setup
-1. Clone the repository:
+1. **Clone the repository**:
 ```
 git clone https://github.com/dayzyy/API-SocialMediaApp.git
 ```
@@ -46,13 +46,21 @@ git clone https://github.com/dayzyy/API-SocialMediaApp.git
 2. **Install all the dependencies:**
 ```
 cd API-SocialMediaApp/backend/
+python -m venv .env
+source .env/bin/activate
 pip install -r requirements.txt
 
 cd ../frontend/
 npm install
 ```
 
-3. **Run the servers:**
+3. **Set up the databse tables in the backend:**
+```
+cd ../backend/
+python manage.py migrate
+```
+
+4. **Run the servers:**
 - **Backend** (API-SocialMediaApp/backend/) (runs on port 8000 by default)
 ```
 python manage.py runserver
@@ -62,5 +70,20 @@ python manage.py runserver
 ```
 npm run dev
 ```
+
+## Screenshots
+
+![Signup Page](screenshots/signup1.png)
+![Signup Page](screenshots/signup2.png)
+
+![Feed Page](screenshots/feed.png)
+
+![Profile Page](screenshots/profile.png)
+![Friends Page](screenshots/addfriend.png)
+
+![Notifications Page](screenshots/notifications.png)
+
+![Directs Page](screenshots/directs.png)
+![Chat Page](screenshots/chat.png)
 
 **@dayzyyinwl**
