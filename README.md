@@ -92,18 +92,18 @@ npm run dev
 
 ## Mobile
 
-![Signup Page](screenshots/mobile/signup1.png)
-![Signup Page](screenshots/mobile/signup2.png)
+<img src="screenshots/mobile/signup1.png" width="300">
+<img src="screenshots/mobile/signup2.png" width="300">
 
-![Feed Page](screenshots/mobile/feed.png)
+<img src="screenshots/mobile/feed.png" width="300">
 
-![Profile Page](screenshots/mobile/myprofile.png)
-![Friend Profile Page](screenshots/mobile/friendprofile.png)
-![Friends Page](screenshots/mobile/friends.png)
+<img src="screenshots/mobile/myprofile.png" width="300">
+<img src="screenshots/mobile/friendprofile.png" width="300">
+<img src="screenshots/mobile/friends.png" width="300">
 
-![Notifications Page](screenshots/mobile/notifications.png)
+<img src="screenshots/mobile/notifications.png" width="300">
 
-![Directs Page](screenshots/mobile/directs.png)
-![Chat Page](screenshots/mobile/chat.png)
+<img src="screenshots/mobile/directs.png" width="300">
+<img src="screenshots/mobile/chat.png" width="300">
 
 **@dayzyyinwl**
