@@ -73,7 +73,7 @@ npm run dev
 
 ## Screenshots
 
-## Desktop
+### Desktop
 
 ![Signup Page](screenshots/desktop/signup1.png)
 ![Signup Page](screenshots/desktop/signup2.png)
@@ -90,7 +90,7 @@ npm run dev
 ![Chat Page](screenshots/desktop/chat.png)
 
 
-## Mobile
+### Mobile
 
 <img src="screenshots/mobile/signup1.png" width="300" style="border: 2px solid black; border-radius: 10px;">
 <img src="screenshots/mobile/signup2.png" width="300" style="border: 2px solid black; border-radius: 10px;">
