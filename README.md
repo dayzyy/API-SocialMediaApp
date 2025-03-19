@@ -73,17 +73,37 @@ npm run dev
 
 ## Screenshots
 
-![Signup Page](screenshots/signup1.png)
-![Signup Page](screenshots/signup2.png)
+## Desktop
 
-![Feed Page](screenshots/feed.png)
+![Signup Page](screenshots/desktop/signup1.png)
+![Signup Page](screenshots/desktop/signup2.png)
 
-![Profile Page](screenshots/profile.png)
-![Friends Page](screenshots/addfriend.png)
+![Feed Page](screenshots/desktop/feed.png)
 
-![Notifications Page](screenshots/notifications.png)
+![Profile Page](screenshots/desktop/myprofile.png)
+![Friend Profile Page](screenshots/desktop/friendprofile.png)
+![Friends Page](screenshots/desktop/friends.png)
 
-![Directs Page](screenshots/directs.png)
-![Chat Page](screenshots/chat.png)
+![Notifications Page](screenshots/desktop/notifications.png)
+
+![Directs Page](screenshots/desktop/directs.png)
+![Chat Page](screenshots/desktop/chat.png)
+
+
+## Mobile
+
+![Signup Page](screenshots/mobile/signup1.png)
+![Signup Page](screenshots/mobile/signup2.png)
+
+![Feed Page](screenshots/mobile/feed.png)
+
+![Profile Page](screenshots/mobile/myprofile.png)
+![Friend Profile Page](screenshots/mobile/friendprofile.png)
+![Friends Page](screenshots/mobile/friends.png)
+
+![Notifications Page](screenshots/mobile/notifications.png)
+
+![Directs Page](screenshots/mobile/directs.png)
+![Chat Page](screenshots/mobile/chat.png)
 
 **@dayzyyinwl**
