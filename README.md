@@ -92,18 +92,18 @@ npm run dev
 
 ## Mobile
 
-<img src="screenshots/mobile/signup1.png" width="300">
-<img src="screenshots/mobile/signup2.png" width="300">
+<img src="screenshots/mobile/signup1.png" width="300" style="border: 2px solid black; border-radius: 10px;">
+<img src="screenshots/mobile/signup2.png" width="300" style="border: 2px solid black; border-radius: 10px;">
 
-<img src="screenshots/mobile/feed.png" width="300">
+<img src="screenshots/mobile/feed.png" width="300" style="border: 2px solid black; border-radius: 10px;">
 
-<img src="screenshots/mobile/myprofile.png" width="300">
-<img src="screenshots/mobile/friendprofile.png" width="300">
-<img src="screenshots/mobile/friends.png" width="300">
+<img src="screenshots/mobile/myprofile.png" width="300" style="border: 2px solid black; border-radius: 10px;">
+<img src="screenshots/mobile/friendprofile.png" width="300" style="border: 2px solid black; border-radius: 10px;">
+<img src="screenshots/mobile/friends.png" width="300" style="border: 2px solid black; border-radius: 10px;">
 
-<img src="screenshots/mobile/notifications.png" width="300">
+<img src="screenshots/mobile/notifications.png" width="300" style="border: 2px solid black; border-radius: 10px;">
 
-<img src="screenshots/mobile/directs.png" width="300">
-<img src="screenshots/mobile/chat.png" width="300">
+<img src="screenshots/mobile/directs.png" width="300" style="border: 2px solid black; border-radius: 10px;">
+<img src="screenshots/mobile/chat.png" width="300" style="border: 2px solid black; border-radius: 10px;">
 
 **@dayzyyinwl**
